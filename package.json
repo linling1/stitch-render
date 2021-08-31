@@ -1,0 +1,17 @@
+{
+  "name": "stitch-render",
+  "version": "1.0.0",
+  "description": "render module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "ling.lin",
+  "license": "ISC",
+  "dependencies": {
+    "chrome-launcher": "^0.14.0",
+    "chrome-remote-interface": "^0.31.0",
+    "puppeteer": "^10.2.0"
+  }
+}
