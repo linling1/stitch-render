@@ -1,1 +1,0 @@
-await tab.Runtime.evaluate({expression: `sarr = document.getElementsByTagName('script'); for (var i=0; i < sarr.length; i++){sarr[i].removeAttribute('nonce'); sarr[i].removeAttribute('async');}`})
