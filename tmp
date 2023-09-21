@@ -1,0 +1,27 @@
+
+[shadow dom]
+来看一个简单示例：
+
+<template id="my-paragraph">
+  <p> Paragraph content. </p>
+</template>
+上面的内容不会在页面中渲染，除非使用 JavaScript 来引用其中的内容，然后使用类似如下的代码来挂载到 DOM 中：
+
+var template = document.getElementById('my-paragraph');
+var templateContent = template.content;
+document.body.appendChild(templateContent);
+
+
+
+
+
+[extension]
+--load-extension : 	Comma-separated list of paths to extensions to load at startup. 
+
+load more than one extension:
+I'm loading react-dev-tools and redux-dev-tools in a NW.js manifest like this: ` --load-extension='./chrome_extensions/lmhkpmbekcpmknklioeibfkpmmfibljd/2.17.0_0,./chrome_extensions/fmkadmapgofadopljbjfkapdkoienihi/3.6.0_0'`
+
+
+Note:
+Most of the command-line flags are only effective when all existing instances of Chrome that corresponds to the chrome profile have been terminated.
+If you don't see any Chrome window, open the task manager and kill every process called chrome.exe. After doing that, you can use --load-extension=... to temporarily load a Chrome extension (the extension will be gone when you start Chrome without this flag, again only after closing all running instances of Chrome).

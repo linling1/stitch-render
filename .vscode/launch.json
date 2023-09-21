@@ -8,6 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
+            "env": {"ENBALE_PROXY_POOL":"true"},
             "skipFiles": [
                 "<node_internals>/**"
             ],
