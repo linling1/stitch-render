@@ -1,6 +1,5 @@
 
 Stitch Render
-
 ===========================
 
 fork from [prerender](https://github.com/prerender/prerender/tree/master)
