@@ -36,6 +36,12 @@ fork from [prerender](https://github.com/prerender/prerender/tree/master)
 
 ### Youtube
 
+* 新闻页
+
+~~~
+http://172.31.16.183:3000/render?renderType=json&disableImage=true&sunflower=true&url=https://www.iowapublicradio.org/news-from-npr/2023-09-21/biden-is-telling-his-donors-that-trump-is-out-to-destroy-democracy
+~~~
+
 * 获取评论 element 的视频页
 
 ~~~
@@ -49,4 +55,4 @@ http://172.31.16.183:3000/render?renderType=json&parseShadowDom=true&url=https:/
 ~~~
 
 
-> 共同问题，ShadowDom 后的内容结果和浏览器中看到的不一样。有时候还会丢失内容
+> ⚠️ Note : ShadowDom 后的内容结果和浏览器中看到的不一样。有时候还会丢失内容
