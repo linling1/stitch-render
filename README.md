@@ -53,5 +53,3 @@ http://172.31.16.183:3000/render?disableImage=true&renderType=json&parseShadowDo
 http://172.31.16.183:3000/render?renderType=json&parseShadowDom=true&url=https://www.rottentomatoes.com/m/the_nun_ii
 ~~~
 
-
-> ⚠️ Note : ShadowDom 后的内容结果和浏览器中看到的不一样。有时候还会丢失内容

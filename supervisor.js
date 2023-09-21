@@ -32,7 +32,8 @@ function envClear() {
 
 function start() {
     envClear();
-    let ChildProcess = fork('./server.js', [], {env: {ENBALE_PROXY_POOL:'true'}});
+    // let ChildProcess = fork('./server.js', [], {env: {ENBALE_PROXY_POOL:'true'}});
+    let ChildProcess = fork('./server.js');
     ChildProcess.on('exit', function(code) {
         console.log('process exits : ' + code);
         if (code !== 0) {
