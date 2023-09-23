@@ -12,6 +12,39 @@ var templateContent = template.content;
 document.body.appendChild(templateContent);
 
 
+* close mode
+~~~
+class MyComponent extends HTMLElement {
+  constructor () {
+    super();
+    // With closed, a ShadowRoot reference needs to be stored
+    this._shadowRoot = this.attachShadow({ mode: 'closed' });
+  }
+  connectedCallback() {
+    // Do stuff with ShadowRoot via stored reference
+  }
+}
+// Define component in custom element registry
+window.customElements.define('my-component', MyComponent);
+// Create component
+const el = document.createElement('my-component');
+document.body.appendChild(el);
+// ShadowRoot is not publicly available
+console.log(el.shadowRoot); // => null
+~~~
+
+Because Element.shadowRoot’s public access is disallowed, it’s commonly perceived as a “security” feature. However, because it requires a stored reference, it’s not actually all that secure.
+
+~~~
+// Continuing the above example
+console.log(el._shadowRoot); // => ShadowRoot {}
+~~~
+
+The alternative perhaps would be to store the ShadowRoot references in a WeakMap; however, that would not prevent an attacker from overriding Element.prototype.attachShadow.
+
+
+
+
 
 
 

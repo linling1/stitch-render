@@ -3,7 +3,7 @@ var prerender = require('./lib');
 
 var server = prerender();
 
-server.use(prerender.sendPrerenderHeader());
+// server.use(prerender.sendPrerenderHeader());
 server.use(prerender.browserForceRestart());
 // server.use(prerender.blockResources());
 server.use(prerender.addMetaTags());

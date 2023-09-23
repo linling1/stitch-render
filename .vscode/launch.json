@@ -7,7 +7,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "server",
             "env": {"ENBALE_PROXY_POOL":"true"},
             "skipFiles": [
                 "<node_internals>/**"
