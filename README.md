@@ -28,6 +28,7 @@ fork from [prerender](https://github.com/prerender/prerender/tree/master)
 | parseShadowDom | string | false | if html dump with shadow |
 | proxyUrl | string | - | specify proxyUrl to used. e.g. `http://172.31.17.153:3128` ; if not setting, use proxy url from proxy pool by random. |
 | disableProxy | string | false | disable proxy ; if true, will be ignore `proxyUrl` param |
+| disableJS | string | false | whether script execution should be disabled ; if false |
 
 
 
