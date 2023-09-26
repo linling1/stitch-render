@@ -29,7 +29,7 @@ function start(first) {
             setTimeout(start, 1000);
         }
         console.log("cycle restart server")
-        setTimeout(()=> killChildProcess(), 3*60*1000);
+        setTimeout(()=> killChildProcess(), 60*60*1000);
         
     });
 
@@ -40,7 +40,7 @@ function start(first) {
 
     if(first) {
         console.log("first to cycle restart server")
-        setTimeout(()=> killChildProcess(), 3*60*1000);
+        setTimeout(()=> killChildProcess(), 60*60*1000);
     }
 
     console.log(`ChildProcess pid : ${ChildProcess.pid}`)
