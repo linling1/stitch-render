@@ -35,8 +35,6 @@ fork from [prerender](https://github.com/prerender/prerender/tree/master)
 
 ## Cases
 
-### Youtube
-
 * 新闻页
 
 ~~~
