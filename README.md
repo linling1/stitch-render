@@ -29,13 +29,11 @@ fork from [prerender](https://github.com/prerender/prerender/tree/master)
 | proxyUrl | string | - | specify proxyUrl to used. e.g. `http://172.31.17.153:3128` ; if not setting, use proxy url from proxy pool by random. |
 | disableProxy | string | false | disable proxy ; if true, will be ignore `proxyUrl` param |
 | disableJS | string | false | whether script execution should be disabled |
-| adblock 🧪 | string | false | whether block ad |
+| adblock ![](https://p.ipic.vip/og9z6b.png) | string | false | whether block ad |
 
 
 
 ## Cases
-
-### Youtube
 
 * 新闻页
 
@@ -43,7 +41,7 @@ fork from [prerender](https://github.com/prerender/prerender/tree/master)
 http://172.31.16.183:3000/render?renderType=json&disableImage=true&sunflower=true&url=https://www.iowapublicradio.org/news-from-npr/2023-09-21/biden-is-telling-his-donors-that-trump-is-out-to-destroy-democracy
 ~~~
 
-* 获取评论 element 的视频页
+* YouTube 获取评论 element
 
 ~~~
 http://172.31.16.183:3000/render?disableImage=true&renderType=json&parseShadowDom=true&delay=5&javascript=scrollBy(0,%20400);&url=https://www.youtube.com/watch?v=APc8onwaSyc
