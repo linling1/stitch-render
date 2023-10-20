@@ -25,6 +25,7 @@ fork from [prerender](https://github.com/prerender/prerender/tree/master)
 | sunflower | string | false | attatch `surface_vision_info`,`dom_style_info`,`text_vision_info` attributes to element |
 | disableImage | string | false | disable fetch image |
 | delay | int | - | unit : second ; waiting some time fater page last request |
+| pageLoadTimeout | int | 20 | unit : second ; waiting page loading time |
 | parseShadowDom | string | false | if html dump with shadow |
 | proxyUrl | string | - | specify proxyUrl to used. e.g. `http://172.31.17.153:3128` ; if not setting, use proxy url from proxy pool by random. |
 | disableProxy | string | false | disable proxy ; if true, will be ignore `proxyUrl` param |
