@@ -30,8 +30,9 @@ fork from [prerender](https://github.com/prerender/prerender/tree/master)
 | proxyUrl | string | - | specify proxyUrl to used. e.g. `http://172.31.17.153:3128` ; if not setting, use proxy url from proxy pool by random. |
 | disableProxy | string | false | disable proxy ; if true, will be ignore `proxyUrl` param |
 | disableJS | string | false | whether script execution should be disabled |
-| cookies | array string | - | customize cookie, one cookie format `key : value` ; e.g. get request : `cookies=PREF:tz%3DAsia.Shanghai%26hl%3Des-US` |
+| cookies | dict/array string | - | customize cookie, post request is dict ; get request is array string, one cookie format `key : value` ; e.g. get request : `cookies=PREF:tz%3DAsia.Shanghai%26hl%3Des-US` |
 | adblock ![](https://p.ipic.vip/og9z6b.png) | string | false | whether block ad |
+| interceptionStr | string | - | interception url include interceptionStr and additional response interception requestion body |
 
 
 
