@@ -2,7 +2,7 @@
 Stitch Render
 ===========================
 
-fork from [prerender](https://github.com/prerender/prerender/tree/master)
+基于 [prerender](https://github.com/prerender/prerender/tree/master) 的二次开发
 
 
 ## Api
@@ -56,3 +56,8 @@ http://172.31.16.183:3000/render?disableImage=true&renderType=json&parseShadowDo
 http://172.31.16.183:3000/render?renderType=json&parseShadowDom=true&url=https://www.rottentomatoes.com/m/the_nun_ii
 ~~~
 
+* 拦截器示例
+
+~~~
+http://172.31.16.183:3000/render?renderType=json&delay=5&interceptionStr=/graphql/gql_para_POST&url=https%3A%2F%2Fwww.quora.com%2Fsearch%3Fq%3Dbayern
+~~~
