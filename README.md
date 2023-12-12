@@ -31,7 +31,7 @@ Stitch Render
 | disableProxy | string | false | disable proxy ; if true, will be ignore `proxyUrl` param |
 | disableJS | string | false | whether script execution should be disabled |
 | cookies | dict/array string | - | customize cookie, post request is dict ; get request is array string, one cookie format `key : value` ; e.g. get request : `cookies=PREF:tz%3DAsia.Shanghai%26hl%3Des-US` |
-| adblock ![](https://p.ipic.vip/og9z6b.png) | string | false | whether block ad |
+| adblock ![](https://p.ipic.vip/fklc5f.png) | string | false | whether block ad |
 | interceptionStr | string | - | interception url include interceptionStr and additional response interception requestion body |
 
 
