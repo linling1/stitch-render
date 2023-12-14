@@ -19,7 +19,7 @@ output_html = """
 
 
 
-def redner(url:str, user_agent:str=None, cookies:dict=None, proxy_host:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False) -> str :
+def redner(url:str, user_agent:str=None, cookies:dict=None, proxy_host:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False, javascript:str=None) -> str :
     try :
         proxy_host = proxy_host if proxy_host else get_proxy()
         with SeleniumRender(proxy_host=proxy_host, user_agent=user_agent, loading_page_timeout=loading_page_timeout) as driver :
@@ -36,6 +36,14 @@ def redner(url:str, user_agent:str=None, cookies:dict=None, proxy_host:str=None,
                 driver.refresh()
                 time.sleep(1)
             
+            js_ret = None
+            if javascript :
+                js_ret = driver.execute_cdp_cmd("Runtime.evaluate", {
+                    "expression": javascript
+                })
+                js_ret = js_ret.get('result',{}).get('value')
+                time.sleep(1)
+                
             ret = driver.execute_cdp_cmd("Runtime.evaluate", {
                 "expression": output_html
             })

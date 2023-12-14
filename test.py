@@ -19,10 +19,10 @@ with SeleniumRender(headless=False) as driver :
     })()
     """
     ret = driver.execute_cdp_cmd("Runtime.evaluate", {
-        "expression": output_html
+        "expression": 'setTimeout(()=>console.log("hello"), 3000)'
     })
     html = ret.get('result',{}).get('value')
-    print(html, file=open('./a.html','w'))
+    # print(html, file=open('./a.html','w'))
 
 
 
