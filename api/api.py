@@ -28,6 +28,7 @@ app.blueprint(openapi2_blueprint)
 # http://172.31.16.183:3001/swagger/
 arg_parser = argparse.ArgumentParser(description='Api')
 arg_parser.add_argument("--port", type=int, help='启动端口', default=3001)
+arg_parser.add_argument("--workers", type=int, help='进程数', default=1)
 args = arg_parser.parse_args()
 
 
@@ -86,7 +87,7 @@ def get_render(request):
         return {'message': str(e)}, 500
 
 
-app.run(host='0.0.0.0', port=args.port)
+app.run(host='0.0.0.0', port=args.port, workers=args.workers)
 
 
 

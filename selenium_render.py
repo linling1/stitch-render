@@ -25,7 +25,7 @@ class SeleniumRender :
     def _get_driver(self, headless=True, mobile=False, proxy_host=None, run_js:bool=False, user_agent:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, disable_proxy:bool=False, width:int=1440, height:int=718) -> webdriver.Chrome :
         chrome_options = webdriver.ChromeOptions()
         if headless:
-            chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--headless=new")
 
         if mobile:
             # use to load as mobile
@@ -39,7 +39,7 @@ class SeleniumRender :
         chrome_options.add_experimental_option('excludeSwitches', ['enable-automation','enable-logging'])
         chrome_options.add_experimental_option('useAutomationExtension', False)
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")  # 就是这一行告诉chrome去掉了webdriver痕迹，令navigator.webdriver=false，极其关键
-        # chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--start-maximized")
         chrome_options.add_argument("--disable-notifications")
