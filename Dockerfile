@@ -1,7 +1,6 @@
 FROM ubuntu:20.04
 
 RUN apt-get update && echo 12 | DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y wget unzip libvips-dev libdrm2 libice6 libsm6 libgbm-dev libxkbcommon-x11-0 libgtk-3-0 libasound2 curl python3.8 python3-pip
-RUN ln -s /usr/bin/python3.8 /usr/bin/python3
 
 
 ENV HOME /root
