@@ -1,7 +1,7 @@
 const {fork, execSync} = require('child_process');
 const util = require("./lib/util")
 
-
+util.redefine_log()
 
 function killChildProcess() {
     console.log(`===== ${new Date().toISOString()} Kill Server =====`);
@@ -46,7 +46,6 @@ function start(first) {
     console.log(`ChildProcess pid : ${ChildProcess.pid}`)
     
 }
-
 
 
 start(true);
