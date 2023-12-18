@@ -71,7 +71,7 @@ def get_render(request):
             cookies = {}
             info = [item.strip() for item in cookies_str.split(";")]
             for item in info :
-                kv = item.split("=")
+                kv = item.split("=", 1)
                 cookies[kv[0]] = kv[1]
         proxy_url = request.args.get('proxy_url')
         javascript = request.args.get('javascript')
@@ -85,6 +85,29 @@ def get_render(request):
     except Exception as e :
         logging.exception(e)
         return {'message': str(e)}, 500
+
+
+@app.post('selenium/render')
+@doc.consumes(doc.JsonBody(), location="body", required=True)
+def post_render(request):
+    body = request.json
+    url = body.get('url')
+    logging.info(f"[post_render] ===== url : {url} ; args : {json.dumps(request.args)}")
+    try :
+        user_agent = body.get('user_agent')
+        cookies = body.get('cookies')
+        proxy_url = body.get('proxy_url')
+        javascript = body.get('javascript')
+        loading_page_timeout = body.get('loading_page_timeout')
+        refresh = body.get('refresh', False)
+        disable_proxy = body.get('disable_proxy', False)
+        delay = body.get('delay')
+        width = body.get('width')
+        height = body.get('height')
+        return json_response(request.app.ctx.render(url=url, user_agent=user_agent, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height))
+    except Exception as e :
+        logging.exception(e)
+        return {'message': str(e)}, 500    
 
 
 app.run(host='0.0.0.0', port=args.port, workers=args.workers)
