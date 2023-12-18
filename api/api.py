@@ -100,6 +100,8 @@ def post_render(request):
         javascript = body.get('javascript')
         loading_page_timeout = body.get('loading_page_timeout')
         refresh = body.get('refresh', False)
+        if isinstance(refresh, str) :
+            refresh = bool(util.strtobool(refresh))
         disable_proxy = body.get('disable_proxy', False)
         delay = body.get('delay')
         width = body.get('width')

@@ -25,6 +25,7 @@ def render(url:str, user_agent:str=None, cookies:dict=None, proxy_url:str=None, 
         loading_page_timeout = loading_page_timeout if loading_page_timeout else EXECUTOR_TIMEOUT
         width = width if width else 1440
         height = height if height else 718
+        logging.info(f"render. url : {url} ; refresh : {refresh} ; proxy_host : {proxy_host} ; user_agent : {user_agent} ; loading_page_timeout : {loading_page_timeout} ; disable_proxy : {disable_proxy} ; javascript : {javascript}")
         with SeleniumRender(proxy_host=proxy_host, user_agent=user_agent, loading_page_timeout=loading_page_timeout, disable_proxy=disable_proxy, width=width, height=height) as driver :
             if cookies :
                 cookie_param = []
