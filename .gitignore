@@ -136,4 +136,4 @@ spider/scrapers/output/
 logs/
 
 
-chrome/
+test.py
