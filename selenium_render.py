@@ -64,6 +64,7 @@ class SeleniumRender :
                 'class': "org.openqa.selenium.Proxy",
                 'autodetect': False
             }
+            capabilities['goog:loggingPrefs'] = { 'browser':'ALL' }
 
         driver = webdriver.Chrome(service=Service(ChromeDriverManager(version="113.0.5672.63").install()),
                                         options=chrome_options, desired_capabilities=capabilities)
