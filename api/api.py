@@ -12,7 +12,7 @@ from time import perf_counter
 from distutils import util
 
 
-from render_service import render
+from render_service import RenderService
 
 
 
@@ -29,12 +29,18 @@ app.blueprint(openapi2_blueprint)
 arg_parser = argparse.ArgumentParser(description='Api')
 arg_parser.add_argument("--port", type=int, help='启动端口', default=3001)
 arg_parser.add_argument("--workers", type=int, help='进程数', default=1)
+arg_parser.add_argument("--env", type=str, help='启动环境', default="prod")
 args = arg_parser.parse_args()
 
 
 @app.before_server_start
 async def setup(app, loop) :
-    app.ctx.render = render
+    config = {}
+    if args.env == "prod" :
+        from config.prod_conf import config
+    elif args.env == "linling" :
+        from config.linling_conf import config
+    app.ctx.render_service = RenderService(**config)
 
 
 @app.middleware('request')
@@ -81,7 +87,7 @@ def get_render(request):
         delay = request.args.get('delay')
         width = request.args.get('width')
         height = request.args.get('height')
-        return json_response(request.app.ctx.render(url=url, user_agent=user_agent, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height))
+        return json_response(request.app.ctx.render_service.render(url=url, user_agent=user_agent, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height))
     except Exception as e :
         logging.exception(e)
         return {'message': str(e)}, 500
