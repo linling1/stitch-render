@@ -1,8 +1,8 @@
 
 from selenium_render import SeleniumRender
 
-
-with SeleniumRender(headless=False, proxy_host="http://172.31.17.153:3128") as driver :
+chrome_path = "/Users/linling/Documents/software/chrome/chrome113/Google Chrome.app/Contents/MacOS/Google Chrome"
+with SeleniumRender(headless=False, proxy_host="http://172.31.17.153:3128", chrome_path=chrome_path, loading_page_timeout=30, version="113.0.5672.63") as driver :
     driver.get('https://www.nextdish.com/menu')
     print("============ 执行js ============")
     driver.execute_script(script="""
