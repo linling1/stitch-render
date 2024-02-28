@@ -23,6 +23,7 @@ class SeleniumRender :
     
     
     def _get_driver(self, headless=True, mobile=False, proxy_host=None, run_js:bool=False, user_agent:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, disable_proxy:bool=False, width:int=1440, height:int=718, chrome_path:str=None, version:str=None) -> webdriver.Chrome :
+        driver = None
         try :
             chrome_options = webdriver.ChromeOptions()
             if headless:
@@ -84,11 +85,12 @@ class SeleniumRender :
             driver.set_page_load_timeout(loading_page_timeout)
                 
             return driver
-        except :
+        except Exception as e:
             try :
                 driver.quit()
             except :
                 pass
+            raise e
     
     
     def close(self) -> None :
