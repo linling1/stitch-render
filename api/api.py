@@ -112,7 +112,7 @@ def post_render(request):
         delay = body.get('delay')
         width = body.get('width')
         height = body.get('height')
-        return json_response(request.app.ctx.render(url=url, user_agent=user_agent, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height))
+        return json_response(request.app.ctx.render_service.render(url=url, user_agent=user_agent, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height))
     except Exception as e :
         logging.exception(e)
         return {'message': str(e)}, 500    
