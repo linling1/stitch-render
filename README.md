@@ -33,6 +33,7 @@ Stitch Render
 | cookies | dict/array string | - | customize cookie, post request is dict ; get request is array string, one cookie format `key : value` ; e.g. get request : `cookies=PREF:tz%3DAsia.Shanghai%26hl%3Des-US` |
 | adblock ![](https://p.ipic.vip/fklc5f.png) | string | false | whether block ad |
 | interceptionStr | string | - | interception url include interceptionStr and additional response interception requestion body |
+| htmlContent | string | - | html content to viewer |
 
 
 
