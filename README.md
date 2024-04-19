@@ -1,14 +1,14 @@
-Stitch Selenium Render
+Stitch DrissionPage Render
 ===========================
 
-基于 selenium 的动态渲染
+基于 DrissionPage 的动态渲染
 
 
 ## Api
 
 同时支持 GET 、POST 请求。
 
-**API** : `http://172.31.16.183:3001/selenium/render`
+**API** : `http://172.31.16.183:3001/drission_page/render`
 
 ### 请求参数
 

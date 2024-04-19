@@ -22,7 +22,7 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)s %(filename)s %(lineno)d %(message)s"
 )
 
-app = Sanic("stitch_render_selenium")
+app = Sanic("stitch_render_drission_page")
 app.blueprint(openapi2_blueprint)
 
 # http://172.31.16.183:3001/swagger/
@@ -54,10 +54,10 @@ def add_cost_time(request, response) :
                                            request.path, request.args, json.dumps(request.json)))    
 
 
-@app.get('selenium/render')
+@app.get('drission_page/render')
 @doc.consumes(doc.String(name="url"), location="query", required=True)
 @doc.consumes(doc.String(name="user_agent"), location="query", required=False)
-@doc.consumes(doc.String(name="cookies"), location="query", required=False)
+@doc.consumes(doc.String(name="headers"), location="query", required=False)
 @doc.consumes(doc.String(name="proxy_url"), location="query", required=False)
 @doc.consumes(doc.String(name="javascript"), location="query", required=False)
 @doc.consumes(doc.Integer(name="loading_page_timeout"), location="query", required=False)
@@ -71,14 +71,14 @@ def get_render(request):
     logging.info(f"[get_render] ===== url : {url} ; args : {json.dumps(request.args)}")
     try :
         user_agent = request.args.get('user_agent')
-        cookies_str = request.args.get('cookies')
-        cookies = None
-        if cookies_str :
-            cookies = {}
-            info = [item.strip() for item in cookies_str.split(";")]
+        headers_str = request.args.get('headers')
+        headers = None
+        if headers_str :
+            headers = {}
+            info = [item.strip() for item in headers_str.split(";")]
             for item in info :
                 kv = item.split("=", 1)
-                cookies[kv[0]] = kv[1]
+                headers[kv[0]] = kv[1]
         proxy_url = request.args.get('proxy_url')
         javascript = request.args.get('javascript')
         loading_page_timeout = request.args.get('loading_page_timeout')
@@ -93,7 +93,7 @@ def get_render(request):
         return {'message': str(e)}, 500
 
 
-@app.post('selenium/render')
+@app.post('drission_page/render')
 @doc.consumes(doc.JsonBody(), location="body", required=True)
 def post_render(request):
     body = request.json
@@ -101,7 +101,7 @@ def post_render(request):
     logging.info(f"[post_render] ===== url : {url} ; args : {json.dumps(request.args)}")
     try :
         user_agent = body.get('user_agent')
-        cookies = body.get('cookies')
+        headers = body.get('headers')
         proxy_url = body.get('proxy_url')
         javascript = body.get('javascript')
         loading_page_timeout = body.get('loading_page_timeout')

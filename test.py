@@ -1,30 +1,34 @@
 
-from selenium_render import SeleniumRender
 
-chrome_path = "/Users/linling/Documents/software/chrome/chrome113/Google Chrome.app/Contents/MacOS/Google Chrome"
-with SeleniumRender(headless=False, proxy_host="http://172.31.17.153:3128", chrome_path=chrome_path, loading_page_timeout=30, version="113.0.5672.63") as driver :
-    driver.get('https://www.nextdish.com/menu')
-    print("============ 执行js ============")
-    driver.execute_script(script="""
-            ['blur','change','cancel','click','close','dblclick','focus','keydown','keypress','keyup','mousedown','mouseenter','mouseleave','mouseup','submit','select','pointerdown','pointerup','pointercancel','pointerenter','pointerleave'].forEach(key => {
-                window.addEventListener(key, event => {
-                        let target_info = null;
-                        let target_ele = event.target;
-                        if (target_ele) {
-                            target_info = {"localName":target_ele.localName,"className":event.target.classList.value,"target":target_ele.localName+"."+target_ele.classList.value.replaceAll(' ','.')}; 
-                        }
-                        console.log(`event_type : ${event.type} ; target : ${JSON.stringify(target_info)} ; pageX : ${event.pageX} ; pageY : ${event.pageY}`)
-                    });
-            });
-    """)
-    print("============ 操作界面 ============")
-    opt_logs = driver.get_log('browser')
-    events_log = []
-    # 打印所有的 event 事件. 过滤 level == 'INFO' 的相关信息
-    for item in opt_logs :
-        if item.get('level') != 'INFO' :
-            continue
-        print(item.get('message'))
+from drission_page_render import DrissionPageRender
+
+chrome_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+user_agent = "Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)"
+with DrissionPageRender(headless=False, proxy_host="http://172.31.17.153:3128", user_agent=user_agent, chrome_path=chrome_path, loading_page_timeout=30) as page :
+    url = "https://www.tiktok.com/@fcbayern"
+    # page.set.load_mode.none()  # 设置加载模式为none
+    # cookies = {
+    #     "msToken": "6jm1b-46dptt04LSW_rvcGA4GMYcrNDuHxyp92JwtueYFPsA8tFiYgJZyCSmoGCxUtYi2cgpkv65rMPYniS4XcDQa7Xye3EEijp1PGXbqxah_xjxDLptvXAlmn0U7f1uWFIYfz9mLdiDvDQGlvA="
+    # }
+    # if cookies :
+    #     cookie_param = []
+    #     for k, v in cookies.items() :
+    #         cookie_param.append({'name':k,'value':v, 'url':url})
+    #     page.run_cdp("Network.setCookies", **{
+    #         "source": cookie_param
+    #     })
+    # headers = {
+    #     'cookie':"msToken=6jm1b-46dptt04LSW_rvcGA4GMYcrNDuHxyp92JwtueYFPsA8tFiYgJZyCSmoGCxUtYi2cgpkv65rMPYniS4XcDQa7Xye3EEijp1PGXbqxah_xjxDLptvXAlmn0U7f1uWFIYfz9mLdiDvDQGlvA="
+    # }
+    # if headers :
+    #     page.run_cdp("Network.setExtraHTTPHeaders", **{'headers':headers})
+    # page.listen.start('api/post/item_list/')  # 指定监听目标并启动监听
+    page.get(url)
+    # page.refresh()
+    # packet = page.listen.wait()  # 等待数据包
+    # page.stop_loading()  # 主动停止加载
+    print(page.html)  # 打印数据包正文
+    
 
 
 
