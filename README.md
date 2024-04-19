@@ -35,6 +35,7 @@ Stitch Render
 | interceptionStr | string | - | interception url include interceptionStr and additional response interception requestion body |
 | htmlContent | string | - | html content to viewer |
 | headers | dict/array string | - | customize headers, post request is dict ; get request is array string, one header format `key : value` ; e.g. get request : `headers=referer:https://www.youtube.com/hashtag/funnydogs/shorts` |
+| reflush | bool | - | after loaded page to reflush page |
 
 
 
