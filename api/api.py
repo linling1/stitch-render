@@ -50,7 +50,11 @@ def add_start_time(request):
 @app.middleware('response')
 def add_cost_time(request, response) :
     cost = (perf_counter() - request.ctx.start_time)*1000
-    logging.info("response : {} {:.2f}ms ; {} {} {} {}".format(response.status, cost, request.method,
+    if isinstance(response, tuple) :
+        err_data, status_code = response
+        logging.info("response : {} {:.2f}ms ; {} {}".format(status_code, cost, json.dumps(err_data)))    
+    else :
+        logging.info("response : {} {:.2f}ms ; {} {} {} {}".format(response.status, cost, request.method,
                                            request.path, request.args, json.dumps(request.json)))    
 
 
@@ -87,7 +91,7 @@ def get_render(request):
         delay = request.args.get('delay')
         width = request.args.get('width')
         height = request.args.get('height')
-        return json_response(request.app.ctx.render_service.render(url=url, user_agent=user_agent, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height))
+        return json_response(request.app.ctx.render_service.render(url=url, user_agent=user_agent, headers=headers, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height))
     except Exception as e :
         logging.exception(e)
         return {'message': str(e)}, 500
@@ -102,6 +106,7 @@ def post_render(request):
     try :
         user_agent = body.get('user_agent')
         headers = body.get('headers')
+        cookies = body.get('cookies')
         proxy_url = body.get('proxy_url')
         javascript = body.get('javascript')
         loading_page_timeout = body.get('loading_page_timeout')
@@ -112,7 +117,7 @@ def post_render(request):
         delay = body.get('delay')
         width = body.get('width')
         height = body.get('height')
-        return json_response(request.app.ctx.render_service.render(url=url, user_agent=user_agent, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height))
+        return json_response(request.app.ctx.render_service.render(url=url, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height))
     except Exception as e :
         logging.exception(e)
         return {'message': str(e)}, 500    

@@ -24,7 +24,7 @@ class RenderService:
         self.chrome_path = chrome_path
 
 
-    def render(self, url:str, user_agent:str=None, headers:dict=None, proxy_url:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False, javascript:str=None, disable_proxy:bool=False, delay:float=None, width:int=1440, height:int=718) -> str :
+    def render(self, url:str, user_agent:str=None, headers:dict=None, cookies:dict=None, proxy_url:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False, javascript:str=None, disable_proxy:bool=False, delay:float=None, width:int=1440, height:int=718) -> str :
         try :
             proxy_host = proxy_url if proxy_url else get_proxy()
             user_agent = user_agent if user_agent else USER_AGENT_POOL[random.randint(0, len(USER_AGENT_POOL) - 1)]
@@ -33,18 +33,19 @@ class RenderService:
             height = height if height else 718
             logging.info(f"render. url : {url} ; refresh : {refresh} ; proxy_host : {proxy_host} ; user_agent : {user_agent} ; loading_page_timeout : {loading_page_timeout} ; disable_proxy : {disable_proxy} ; javascript : {javascript}")
             with DrissionPageRender(proxy_host=proxy_host, user_agent=user_agent, loading_page_timeout=loading_page_timeout, disable_proxy=disable_proxy, width=width, height=height, chrome_path=self.chrome_path) as page :
-                # if cookies :
-                #     cookie_param = []
-                #     for k, v in cookies :
-                #         cookie_param.append({'name':k,'value':v, 'url':url})
-                #     page.run_cdp("Network.setCookies", **{
-                #         "source": cookie_param
-                #     })
+                if cookies :
+                    cookie_param = []
+                    for k, v in cookies.items() :
+                        cookie_param.append({'name':k,'value':v, 'url':url})
+                    page.run_cdp("Network.setCookies", **{
+                        "cookies": cookie_param
+                    })
                 
                 if headers :
                     page.run_cdp("Network.setExtraHTTPHeaders", **{'headers':headers})
 
-                page.get(url)
+                status = page.get(url)
+                logging.info(f"status : {status}")
                 if refresh :
                     page.refresh()
                 delay = delay if delay else 0.5
@@ -63,14 +64,20 @@ class RenderService:
                 })
                 html = ret.get('result',{}).get('value')
                 
+                resp = page.run_cdp("Network.loadNetworkResource", **{'frameId':page.latest_tab,'url':page.url, 'options':{'disableCache':True,'includeCredentials':True}})
+                logging.info(f"resp : {resp}")
+                
                 return {
                     "url": page.url,
                     "proxy": None if disable_proxy else proxy_host,
                     "userAgent": user_agent,
-                    "content": html
+                    "content": html,
+                    "status": resp.get('resource',{}).get('success'),
+                    "httpStatusCode": resp.get('resource',{}).get('httpStatusCode'),
+                    "headers": resp.get('resource',{}).get('headers'),
                 }
         except Exception as e :
-            logging.error(f"redner fail. url : {url} ; user_agent : {user_agent} ; cookies : {cookies} ; proxy_host : {proxy_host} ; loading_page_timeout : {loading_page_timeout} . err : {e}")
+            logging.error(f"redner fail. url : {url} ; user_agent : {user_agent} ; proxy_host : {proxy_host} ; loading_page_timeout : {loading_page_timeout} . err : {e}")
             logging.exception(e)
             raise e
         
