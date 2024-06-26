@@ -6,7 +6,7 @@ RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | 
 SHELL ["/bin/bash","-ic"] 
 RUN source ~/.bashrc
 
-RUN nvm install 16
+RUN nvm install 20
 
 # RUN echo y | npm install @puppeteer/browsers
 
