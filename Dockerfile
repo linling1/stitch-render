@@ -6,12 +6,12 @@ RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | 
 SHELL ["/bin/bash","-ic"] 
 RUN source ~/.bashrc
 
-RUN nvm install 16
+RUN nvm install 20
 
 # RUN echo y | npm install @puppeteer/browsers
 
 # RUN wget "https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1119062%2Fchrome-linux.zip?generation=1679170252447036&alt=media" --no-check-certificate -q -O chrome.zip && unzip chrome.zip
 
-RUN echo y | npx @puppeteer/browsers install chrome@113.0.5672.63
+RUN echo y | npx @puppeteer/browsers install chrome@126.0.6478.126
 
 RUN curl https://sh.rustup.rs -sSf > rustup-init.sh && sh rustup-init.sh -y && . "$HOME/.cargo/env"
