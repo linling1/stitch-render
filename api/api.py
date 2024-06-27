@@ -5,7 +5,7 @@ import logging
 import sys
 import argparse
 from sanic import Sanic, Blueprint
-from sanic.response import json as json_response
+from sanic.response import file_stream, raw, html, json as json_response
 from sanic_openapi import openapi2_blueprint, doc
 import json
 from time import perf_counter
@@ -60,8 +60,10 @@ def add_cost_time(request, response) :
 
 @app.get('drission_page/render')
 @doc.consumes(doc.String(name="url"), location="query", required=True)
+@doc.consumes(doc.String(name="render_type"), location="query", required=False)
 @doc.consumes(doc.String(name="user_agent"), location="query", required=False)
-@doc.consumes(doc.String(name="headers"), location="query", required=False)
+@doc.consumes(doc.List(name="headers"), location="query", required=False)
+@doc.consumes(doc.List(name="cookies"), location="query", required=False)
 @doc.consumes(doc.String(name="proxy_url"), location="query", required=False)
 @doc.consumes(doc.String(name="javascript"), location="query", required=False)
 @doc.consumes(doc.Integer(name="loading_page_timeout"), location="query", required=False)
@@ -70,19 +72,29 @@ def add_cost_time(request, response) :
 @doc.consumes(doc.Integer(name="delay"), location="query", required=False)
 @doc.consumes(doc.Integer(name="width"), location="query", required=False)
 @doc.consumes(doc.Integer(name="height"), location="query", required=False)
+@doc.consumes(doc.Boolean(name="full_page"), location="query", required=False)
+@doc.consumes(doc.Boolean(name="disable_pop"), location="query", required=False)
+@doc.consumes(doc.Boolean(name="incognito"), location="query", required=False)
 def get_render(request):
     url = request.args.get('url')
     logging.info(f"[get_render] ===== url : {url} ; args : {json.dumps(request.args)}")
     try :
+        render_type = request.args.get('render_type', 'json')
         user_agent = request.args.get('user_agent')
-        headers_str = request.args.get('headers')
+        headers_list = request.args.getlist('headers')
         headers = None
-        if headers_str :
+        if headers_list :
             headers = {}
-            info = [item.strip() for item in headers_str.split(";")]
-            for item in info :
-                kv = item.split("=", 1)
+            for item in headers_list :
+                kv = item.split(":", 1)
                 headers[kv[0]] = kv[1]
+        cookies_list = request.args.getlist('cookies')
+        cookies = None
+        if cookies_list :
+            cookies = {}
+            for item in cookies_list :
+                kv = item.split(":", 1)
+                cookies[kv[0]] = kv[1]
         proxy_url = request.args.get('proxy_url')
         javascript = request.args.get('javascript')
         loading_page_timeout = request.args.get('loading_page_timeout')
@@ -91,7 +103,18 @@ def get_render(request):
         delay = request.args.get('delay')
         width = request.args.get('width')
         height = request.args.get('height')
-        return json_response(request.app.ctx.render_service.render(url=url, user_agent=user_agent, headers=headers, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height))
+        full_page = bool(util.strtobool(request.args.get('full_page', 'false')))
+        disable_pop = bool(util.strtobool(request.args.get('disable_pop', 'true')))
+        incognito = bool(util.strtobool(request.args.get('incognito', 'true')))
+        resp = request.app.ctx.render_service.render(url=url, render_type=render_type, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height, full_page=full_page, disable_pop=disable_pop, incognito=incognito)
+        if render_type == 'json' :
+            return json_response(resp)
+        elif render_type == 'html' :
+            return html(resp.get('content'))
+        elif render_type in ["png","jpeg"] :
+            return raw(resp.get('content'), content_type=f"image/{render_type}")
+        else :
+            return {'message': f"invalid 'render_type' : {render_type}"}, 401
     except Exception as e :
         logging.exception(e)
         return {'message': str(e)}, 500
@@ -104,6 +127,7 @@ def post_render(request):
     url = body.get('url')
     logging.info(f"[post_render] ===== url : {url} ; args : {json.dumps(request.args)}")
     try :
+        render_type = body.get('render_type', 'json')
         user_agent = body.get('user_agent')
         headers = body.get('headers')
         cookies = body.get('cookies')
@@ -117,10 +141,21 @@ def post_render(request):
         delay = body.get('delay')
         width = body.get('width')
         height = body.get('height')
-        return json_response(request.app.ctx.render_service.render(url=url, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height))
+        full_page = body.get('full_page', False)
+        disable_pop = body.get('disable_pop', True)
+        incognito = body.get('incognito', True)
+        resp = request.app.ctx.render_service.render(url=url, render_type=render_type, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height, full_page=full_page, disable_pop=disable_pop, incognito=incognito)
+        if render_type == 'json' :
+            return json_response(resp)
+        elif render_type == 'html' :
+            return html(resp.get('content'))
+        elif render_type in ["png","jpeg"] :
+            return raw(resp.get('content'), content_type=f"image/{render_type}")
+        else :
+            return {'message': f"invalid 'render_type' : {render_type}"}, 401
     except Exception as e :
         logging.exception(e)
-        return {'message': str(e)}, 500    
+        return {'message': str(e)}, 500
 
 
 app.run(host='0.0.0.0', port=args.port, workers=args.workers)
