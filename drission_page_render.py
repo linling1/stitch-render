@@ -1,5 +1,7 @@
+import logging
 import os
 from DrissionPage import ChromiumPage, ChromiumOptions
+import time
 
 
 USER_AGENT_POOL = [
@@ -65,6 +67,7 @@ class DrissionPageRender:
             if chrome_path :
                 co.set_browser_path(chrome_path)
             
+            co.auto_port()
             page = ChromiumPage(co)
             if run_js :
                 js = open(os.path.join(os.path.dirname(__file__), './js/stealth.min.js')).read()
