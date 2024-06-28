@@ -20,8 +20,8 @@ output_html = """
 
 class RenderService:
     
-    @staticmethod
-    def render(url:str, render_type:str="json", user_agent:str=None, headers:dict=None, cookies:dict=None, proxy_url:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False, javascript:str=None, disable_proxy:bool=False, delay:float=None, width:int=1440, height:int=718, full_page:bool=False, disable_pop:bool=True, incognito:bool=True, chrome_path:str=None) -> str :
+    
+    def render(self, url:str, render_type:str="json", user_agent:str=None, headers:dict=None, cookies:dict=None, proxy_url:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False, javascript:str=None, disable_proxy:bool=False, delay:float=None, width:int=1440, height:int=718, full_page:bool=False, disable_pop:bool=True, incognito:bool=True, chrome_path:str=None) -> str :
         try :
             proxy_host = proxy_url if proxy_url else get_proxy()
             user_agent = user_agent if user_agent else USER_AGENT_POOL[random.randint(0, len(USER_AGENT_POOL) - 1)]
@@ -41,12 +41,12 @@ class RenderService:
                 if headers :
                     page.run_cdp("Network.setExtraHTTPHeaders", **{'headers':headers})
 
-                status = page.get(url)
+                status = page.get(url) 
                 logging.info(f"status : {status}")
                 if refresh :
                     page.refresh()
-                delay = delay if delay else 0.5
-                time.sleep(delay)
+                if delay and delay > 0 :
+                    time.sleep(delay)
                 
                 js_ret = None
                 if javascript :

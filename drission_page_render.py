@@ -2,6 +2,7 @@ import logging
 import os
 from DrissionPage import ChromiumPage, ChromiumOptions
 from datetime import datetime, timedelta, timezone
+import platform
 
 
 USER_AGENT_POOL = [
@@ -35,6 +36,9 @@ class DrissionPageRender:
                 co.headless(True)
             else :
                 co.set_argument("--headless", 'false')
+                
+            if platform.system() == "Linux" :
+                co.set_argument("--no-sandbox")
             
             if mobile :
                 co.set_pref('mobileEmulation', { "deviceName": "iPhone XR" })
@@ -53,7 +57,7 @@ class DrissionPageRender:
             co.set_argument("--start-maximized")
             # co.set_argument("--no-sandbox")
             # co.set_argument("--ignore-certificate-errors")
-            co.set_argument("--log-level", '3')
+            # co.set_argument("--log-level", '3')
             co.set_argument('--window-size', f'{width},{height}')
             co.set_argument("--profile-directory", "Default")
             co.set_argument("--disable-plugins-discovery")
@@ -70,7 +74,9 @@ class DrissionPageRender:
             now = datetime.utcnow().replace(tzinfo=timezone.utc)
             auto_prot = 9600 + int(now.timestamp()) % 9600 + now.microsecond % 100
             co.set_local_port(auto_prot)
+            logging.info("start launch ChromiumPage")
             page = ChromiumPage(co)
+            logging.info("finish launch ChromiumPage")
             if run_js :
                 js = open(os.path.join(os.path.dirname(__file__), './js/stealth.min.js')).read()
                 page.run_cdp("Page.addScriptToEvaluateOnNewDocument", **{
