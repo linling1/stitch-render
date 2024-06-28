@@ -2,7 +2,7 @@ urllib3==1.26.6
 requests
 DrissionPage==v4.0.4.3
 # undetected-chromedriver
-sanic==21.9.3
+sanic==23.12.1
 sanic-ext
 sanic-openapi
 websockets==10.0

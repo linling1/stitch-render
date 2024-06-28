@@ -28,20 +28,18 @@ app.blueprint(openapi2_blueprint)
 # http://172.31.16.183:3001/swagger/
 arg_parser = argparse.ArgumentParser(description='Api')
 arg_parser.add_argument("--port", type=int, help='启动端口', default=3001)
-arg_parser.add_argument("--workers", type=int, help='进程数', default=1)
 arg_parser.add_argument("--env", type=str, help='启动环境', default="prod")
 args = arg_parser.parse_args()
 
 
 @app.before_server_start
-async def setup(app, loop) :
+def setup(app, loop) :
     config = {}
     if args.env == "prod" :
         from config.prod_conf import config
     elif args.env == "linling" :
         from config.linling_conf import config
     app.ctx.chrome_path = config.get('chrome_path')
-    app.ctx.render_service = RenderService()
 
 
 @app.middleware('request')
@@ -107,7 +105,7 @@ def get_render(request):
         full_page = bool(util.strtobool(request.args.get('full_page', 'false')))
         disable_pop = bool(util.strtobool(request.args.get('disable_pop', 'true')))
         incognito = bool(util.strtobool(request.args.get('incognito', 'true')))
-        resp = app.ctx.render_service.render(url=url, render_type=render_type, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height, full_page=full_page, disable_pop=disable_pop, incognito=incognito, chrome_path=app.ctx.chrome_path)
+        resp = RenderService.render(url=url, render_type=render_type, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height, full_page=full_page, disable_pop=disable_pop, incognito=incognito, chrome_path=app.ctx.chrome_path)
         if render_type == 'json' :
             return json_response(resp)
         elif render_type == 'html' :
@@ -145,7 +143,7 @@ def post_render(request):
         full_page = body.get('full_page', False)
         disable_pop = body.get('disable_pop', True)
         incognito = body.get('incognito', True)
-        resp = app.ctx.render_service.render(url=url, render_type=render_type, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height, full_page=full_page, disable_pop=disable_pop, incognito=incognito, chrome_path=app.ctx.chrome_path)
+        resp = RenderService.render(url=url, render_type=render_type, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height, full_page=full_page, disable_pop=disable_pop, incognito=incognito, chrome_path=app.ctx.chrome_path)
         if render_type == 'json' :
             return json_response(resp)
         elif render_type == 'html' :
@@ -159,7 +157,8 @@ def post_render(request):
         return {'message': str(e)}, 500
 
 
-app.run(host='0.0.0.0', port=args.port, workers=args.workers)
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=args.port)
 
 
 

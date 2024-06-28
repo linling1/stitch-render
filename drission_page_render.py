@@ -71,9 +71,9 @@ class DrissionPageRender:
             if chrome_path :
                 co.set_browser_path(chrome_path)
             
-            now = datetime.utcnow().replace(tzinfo=timezone.utc)
-            auto_prot = 9600 + int(now.timestamp()) % 9600 + now.microsecond % 100
-            co.set_local_port(auto_prot)
+            # now = datetime.utcnow().replace(tzinfo=timezone.utc)
+            # auto_prot = 9600 + int(now.timestamp()) % 9600 + now.microsecond % 100
+            # co.set_local_port(auto_prot)
             logging.info("start launch ChromiumPage")
             page = ChromiumPage(co)
             logging.info("finish launch ChromiumPage")
