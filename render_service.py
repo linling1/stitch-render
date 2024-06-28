@@ -20,8 +20,10 @@ output_html = """
 
 class RenderService:
     
-    @staticmethod
-    def render(url:str, render_type:str="json", user_agent:str=None, headers:dict=None, cookies:dict=None, proxy_url:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False, javascript:str=None, disable_proxy:bool=False, delay:float=None, width:int=1440, height:int=718, full_page:bool=False, disable_pop:bool=True, incognito:bool=True, chrome_path:str=None) -> str :
+    def __init__(self, chrome_path:str=None) -> None:
+        self.chrome_path = chrome_path
+    
+    def render(url:str, render_type:str="json", user_agent:str=None, headers:dict=None, cookies:dict=None, proxy_url:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False, javascript:str=None, disable_proxy:bool=False, delay:float=None, width:int=1440, height:int=718, full_page:bool=False, disable_pop:bool=True, incognito:bool=True) -> str :
         try :
             proxy_host = proxy_url if proxy_url else get_proxy()
             user_agent = user_agent if user_agent else USER_AGENT_POOL[random.randint(0, len(USER_AGENT_POOL) - 1)]
@@ -29,7 +31,7 @@ class RenderService:
             width = width if width else 1440
             height = height if height else 718
             logging.info(f"render. url : {url} ; refresh : {refresh} ; proxy_host : {proxy_host} ; user_agent : {user_agent} ; loading_page_timeout : {loading_page_timeout} ; disable_proxy : {disable_proxy} ; javascript : {javascript}")
-            with DrissionPageRender(proxy_host=proxy_host, user_agent=user_agent, loading_page_timeout=loading_page_timeout, disable_proxy=disable_proxy, width=width, height=height, chrome_path=chrome_path, disable_pop=disable_pop, incognito=incognito) as page :
+            with DrissionPageRender(proxy_host=proxy_host, user_agent=user_agent, loading_page_timeout=loading_page_timeout, disable_proxy=disable_proxy, width=width, height=height, chrome_path=self.chrome_path, disable_pop=disable_pop, incognito=incognito) as page :
                 if cookies :
                     cookie_param = []
                     for k, v in cookies.items() :
