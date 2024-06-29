@@ -105,7 +105,7 @@ def get_render(request):
         full_page = bool(util.strtobool(request.args.get('full_page', 'false')))
         disable_pop = bool(util.strtobool(request.args.get('disable_pop', 'true')))
         incognito = bool(util.strtobool(request.args.get('incognito', 'true')))
-        resp = app.ctx.render_service.render(url=url, render_type=render_type, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height, full_page=full_page, disable_pop=disable_pop, incognito=incognito)
+        resp = request.app.ctx.render_service.render(url=url, render_type=render_type, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height, full_page=full_page, disable_pop=disable_pop, incognito=incognito)
         if render_type == 'json' :
             return json_response(resp)
         elif render_type == 'html' :
@@ -143,7 +143,7 @@ def post_render(request):
         full_page = body.get('full_page', False)
         disable_pop = body.get('disable_pop', True)
         incognito = body.get('incognito', True)
-        resp = app.ctx.render_service.render(url=url, render_type=render_type, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height, full_page=full_page, disable_pop=disable_pop, incognito=incognito)
+        resp = request.app.ctx.render_service.render(url=url, render_type=render_type, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height, full_page=full_page, disable_pop=disable_pop, incognito=incognito)
         if render_type == 'json' :
             return json_response(resp)
         elif render_type == 'html' :
