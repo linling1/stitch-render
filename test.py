@@ -52,12 +52,15 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
     # wf = open("/Users/linling/Desktop/a.png","wb")
     # wf.write(img_bytes)
     # wf.close()
+<<<<<<< HEAD
     if javascript :
         js_ret = page.run_cdp("Runtime.evaluate", **{
             "expression": javascript
         })
         js_ret = js_ret.get('result',{}).get('value')
         time.sleep(1)
+=======
+>>>>>>> drission_page
     time.sleep(10)
     print(page.html, file=open('/Users/linling/Desktop/a.html', 'w'))  # 打印数据包正文
     
