@@ -21,7 +21,7 @@ class DrissionPageRender:
     def __init__(self, headless=True, proxy_host=None, run_js:bool=True, user_agent:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, disable_proxy:bool=False, width:int=1440, height:int=718, chrome_path:str=None, disable_pop:bool=True, incognito:bool=True) -> None :
         self.page = self._get_page(headless=headless, proxy_host=proxy_host, run_js=run_js, user_agent=user_agent, loading_page_timeout=loading_page_timeout, disable_proxy=disable_proxy, width=width, height=height, chrome_path=chrome_path, disable_pop=disable_pop, incognito=incognito)
         
-    def _get_page(self, headless=True, mobile=False, proxy_host=None, run_js:bool=False, user_agent:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, disable_proxy:bool=False, width:int=1440, height:int=718, chrome_path:str=None, disable_pop:bool=True, incognito:bool=True) -> ChromiumPage :
+    def _get_page(self, headless=True, mobile=False, proxy_host=None, run_js:bool=True, user_agent:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, disable_proxy:bool=False, width:int=1440, height:int=718, chrome_path:str=None, disable_pop:bool=True, incognito:bool=True) -> ChromiumPage :
         page = None
         try :
             co = ChromiumOptions(ini_path="./config/dp_configs.ini")
@@ -39,6 +39,8 @@ class DrissionPageRender:
                 
             if platform.system() == "Linux" :
                 co.set_argument("--no-sandbox")
+                co.ignore_certificate_errors(True)
+                co.set_argument("--disable-blink-features", "AutomationControlled")
             
             if mobile :
                 co.set_pref('mobileEmulation', { "deviceName": "iPhone XR" })
@@ -52,7 +54,6 @@ class DrissionPageRender:
             if incognito :
                 co.set_argument("--incognito")
             
-            co.set_argument("--disable-blink-features", "AutomationControlled")
             co.set_argument("--disable-dev-shm-usage")
             co.set_argument("--start-maximized")
             # co.set_argument("--no-sandbox")
@@ -62,7 +63,6 @@ class DrissionPageRender:
             co.set_argument("--profile-directory", "Default")
             co.set_argument("--disable-plugins-discovery")
             co.set_argument("--lang", "en-US")
-            co.ignore_certificate_errors(True)
             co.set_timeouts(page_load=loading_page_timeout)
             
             if proxy_host is not None and not disable_proxy :
