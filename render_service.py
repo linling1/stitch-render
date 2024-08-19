@@ -48,8 +48,6 @@ class RenderService:
                 logging.info(f"status : {status}")
                 if refresh :
                     page.refresh()
-                if delay and delay > 0 :
-                    time.sleep(delay)
                 
                 js_ret = None
                 if javascript :
@@ -57,6 +55,10 @@ class RenderService:
                         "expression": javascript
                     })
                     js_ret = js_ret.get('result',{}).get('value')
+                    
+                if delay and delay > 0 :
+                    time.sleep(delay)
+                else :
                     time.sleep(1)
 
                 if render_type in ["png","jpeg"] :
