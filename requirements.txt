@@ -1,6 +1,6 @@
 urllib3==1.26.6
 requests
-DrissionPage==v4.0.4.3
+DrissionPage==v4.0.4.23
 # undetected-chromedriver
 sanic==23.12.1
 sanic-ext

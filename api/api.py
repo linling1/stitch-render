@@ -23,7 +23,7 @@ logging.basicConfig(
 )
 
 app = Sanic("stitch_render_drission_page")
-app.blueprint(openapi2_blueprint)
+# app.blueprint(openapi2_blueprint)
 
 # http://172.31.16.183:3001/swagger/
 arg_parser = argparse.ArgumentParser(description='Api')
