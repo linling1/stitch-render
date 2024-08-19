@@ -12,15 +12,14 @@ logging.basicConfig(
 )
 
 chrome_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
-with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrome_path, loading_page_timeout=30, proxy_host="http://172.28.16.140:3128", disable_proxy=True) as page :
+user_agent = "Mozilla/5.0 (Linux; U; Android 4.0; en-us; GT-I9300 Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30"
+with DrissionPageRender(headless=True, user_agent=user_agent, chrome_path=chrome_path, loading_page_timeout=30, proxy_host="http://172.28.16.140:3128", disable_proxy=True) as page :
     url = "https://www.meganslaw.ca.gov/"
     # page.set.load_mode.none()  # 设置加载模式为none
     cookies = {
-        ".AspNetCore.Session":"CfDJ8P4MjYHqlLhAr34x3NlJZW6IXnZfgaeRboI5oiJsVEYc62KWyKQaatp%2B%2BL3bb%2Buhjw%2BnnB1WXGk3d7pz44yiNfpSTSl7SuySYCw8S5GUrNuTx5J0rAKeEmE3j%2BCK29XK7KWV6%2FBJcFSvtFTwKI2yzJwcpedMn8IAebM4uWV8hYcv",
-         "mlpersist":"113598562.1.813038960.1332257792",
-        ".AspNetCore.Antiforgery.VyLW6ORzMgk":"CfDJ8P4MjYHqlLhAr34x3NlJZW7TkVBpnY3buTpX1Ie-hbKCU0gJj9QFB_rc7Gmpg0T58-7CtJZcdJkhAlUaOHI1o_0X8eFmxXUG2f0077okdCw-mDqk8Lgu-Q257JF15Usb73YFfgg2trDsQYu_Kk7FqOc",
-        ".AspNetCore.Mvc.CookieTempDataProvider":"CfDJ8P4MjYHqlLhAr34x3NlJZW6YjBo90mdeFEvbjhqQc_7DQPTUHaBNT59JhVHWcE3UiF-H1sfA14-lzYXdQIYiG53fXfFcB_L_W46KCKSS55DwJgZteKCewd3h6H_-11_JXECJkmd6P8q3F7fJysLLan1IsxtAjMYRoeNhHeiHUpUEbKFfLQiyitw0XPh2p0I9pVfjjRKgY2Iojz-hUAJ1b_Tj6b9dNyt1pj5wsmpZZK8cD0pxcaayEBK-9CLevPeBiaag7_dNS84OctqwmyZll7FVgcXcxtmCJnt4iPMv_P5W9_R_w9jJ84D900YIREy9BdvVfxDvPZIJSzYGAroCkYXNiWyHqbLFhkAHseU27u6hb8i6WTmN5kP7TToCIrdWmmNYjX36ZvqTno2b5WuWDX9iriuvuLKakPjfZNQA_0nnLoPK09Ro3DzlRTTbrfcvnQlh0kIXD21OX4ujjA2f2L8CoKhU4O-Zz0l5aZpINMC0ZPSSeIHogjDtbI5dYQ2zwEr2RpkySy6ppUm391JQdO2FdycgGMWT1tqZu23jNHntKTfBfjQWTowQgXg_5l6UiUcI_ytqcCFXGgQPBr5ZIFGJs3fIXaCEjp6k5EbSWXMhJZLqDvv97hSsUXESVlBHh9OBgSxzssa0bc4KCBmzXc2PQApxYSQqfbogX217gZtcQG6KL7WsslxjRyIqol_-qjlkVefXFg7vFjJk_xMmVH5LR04i7Qpm6ByJ_scYn_8sPOynRrdjw2wGea1aXq3r9C2AGXeVvlZqRA6E6mz9QGtekhzYysL0zrpE0BvS8xgcTw4pIeKcHf_2hVL08X-HeFke2e5DUN1rXFwUFX9AEIXtbtReA7psHKLfZLauc-67LGG0dupRN6hGhP2x_i9FFVVj5t28diOPYTY56IiUuwG7120FdPA0yqhtTuj8e9SV0rD_NV_5dgPaIrnipPY_ZD2rsZAk4OR-xYCD82u3v20"
+        ".AspNetCore.Session":"CfDJ8P4MjYHqlLhAr34x3NlJZW6peLe8J%2BeHFSelfom1Z4Y0rCJAfZpb8GwR6AvsMLrGw3jnKGeb0odgWJ3ATzJZBRVtQ6RuL1thDoeWTzPxWqEp8X0KKBerVdOQ4DQW%2BgD5PWbn9ovlgxndE78W%2BOXW8mH3SM3MfOx6MrPd47%2BM9glI",
+        ".AspNetCore.Antiforgery.VyLW6ORzMgk":"CfDJ8P4MjYHqlLhAr34x3NlJZW5MeuuCdakC8jLJqqldU7e2ZBbbXsS5FSHDKucD7giv9YavTvsZzef1cyVWAZbV8n1Hc80voZaxQtHtD8YdbzAjcOzrIiIEtbUpkxLpYRmo6BktZXVEvdM9PRTREASsI1Q",
+        ".AspNetCore.Mvc.CookieTempDataProvider":"CfDJ8P4MjYHqlLhAr34x3NlJZW66IfYlxRpcJSwE-xaKplDL4Gghz2NPB5SRfgbCynpDLlp-Gw492iEQRsC_1VdQyBzMINnJHgfGKIiKz-sMlmjgzAC-5KHe1odjW9mM_okE2tCxkaMR4Ayo1uZyCp09vlV9zgzCOlxjSR_rWf9ELHFF02Q9Ko5N3W1HjKDwR9CRejBpLI2S-LgiJOqviEwRNKEdioyNaL0gKBa53w23HcIevMfxsD2IhTzDMFGuMGYtqU4v9YslQUzlF3fB_2Wf2nNGoleyazO8RIo_U7WOboNcUURnweRBVJZS_xAhjKvVi4lrIUzULl7GV-cqNrqPxh0U6PYr5G9A1VaUIAZ066sahodZ87RFarnucZALtNfUIanDPyulH66x7MmdwKUKGE9JFMZ01PT7ckApSkjbmnMHblggkri1Ogf1OOBfyxW3vqd5nbvFIa6eN7im4wo9zqXtsIZteUrrsqDJZFDANBeL0DvV1zX9DJkNNkANUw6uS9gp-84_-SoKE49VDacSQ9x13niUATc1eTkxi67ZW0y_qQ-skJEKxzDmdOK92BKwNYLZ_0AqRcXcLXQpxVYohvlkMWb14MbZLOBbRw7dxFCMmpCpHKlOwt1grfVfFucLseDaENapHy6NyTcKhmIyBgeU0LHPAAhsLI9XLX3VTA4VLCpBa-eHroXib__LkTcAHlfWDz98TO7pAPY9bTt3fykKZiXcBnhEnfE8rel0kmJ2Lp2TrFcwC92TqlyFX5nDBaiq7WgqPl4ENcvEWS8I3dJq-7S3nz6xHNVdxzSrJIf023ruw33RqVXKcyXj8Tl8TIqOjYhE8poTQqN0GeE5JEOn6OkNlMvzE3W_mq9JABLwfQYD6aj0r5jGDlbgQmG7y7zwBlujnopMYlKqTsF-KopsJZZNRuZM6XO-sffR1oJCKzkpDgcF491uY2G24y5w5kqaL1eR4HLbVMpUqJ441L8"
     }
     if cookies :
         cookie_param = []
@@ -41,7 +40,7 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
         'Sec-Fetch-Site': 'same-origin',
         'Sec-Fetch-User': '?1',
         'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (Linux; U; Android 4.0; en-us; GT-I9300 Build/IMM76D) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30',
     }
     if headers :
         page.run_cdp("Network.setExtraHTTPHeaders", **{'headers':headers})
@@ -54,6 +53,7 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
     # wf = open("/Users/linling/Desktop/a.png","wb")
     # wf.write(img_bytes)
     # wf.close()
+    time.sleep(10)
     print(page.html, file=open('/Users/linling/Desktop/a.html', 'w'))  # 打印数据包正文
     
 

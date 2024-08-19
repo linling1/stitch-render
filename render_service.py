@@ -67,7 +67,7 @@ class RenderService:
                     })
                     content = ret.get('result',{}).get('value')
                 
-                resp = page.run_cdp("Network.loadNetworkResource", **{'frameId':page.latest_tab,'url':page.url, 'options':{'disableCache':True,'includeCredentials':True}})
+                resp = page.run_cdp("Network.loadNetworkResource", **{'frameId':page._frame_id,'url':page.url, 'options':{'disableCache':True,'includeCredentials':True}})
                 logging.info(f"resp : {resp}")
                 
 
