@@ -2,6 +2,7 @@
 import logging
 import time
 import random
+import json
 
 from drission_page_render import DrissionPageRender, EXECUTOR_TIMEOUT, USER_AGENT_POOL
 from external_api.proxy import get_proxy
@@ -24,7 +25,7 @@ class RenderService:
         self.chrome_path = chrome_path
     
     
-    def render(self, url:str, render_type:str="json", user_agent:str=None, headers:dict=None, cookies:dict=None, proxy_url:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False, javascript:str=None, disable_proxy:bool=False, delay:float=None, width:int=1440, height:int=718, full_page:bool=False, disable_pop:bool=True, incognito:bool=True) -> str :
+    def render(self, url:str, render_type:str="json", user_agent:str=None, headers:dict=None, cookies:dict=None, proxy_url:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False, javascript:str=None, disable_proxy:bool=False, delay:float=None, width:int=1440, height:int=718, full_page:bool=False, disable_pop:bool=True, incognito:bool=True, actions:list=None) -> str :
         try :
             proxy_host = proxy_url if proxy_url else get_proxy()
             user_agent = user_agent if user_agent else USER_AGENT_POOL[random.randint(0, len(USER_AGENT_POOL) - 1)]
@@ -55,6 +56,18 @@ class RenderService:
                         "expression": javascript
                     })
                     js_ret = js_ret.get('result',{}).get('value')
+                
+                if actions :
+                    for action in actions :
+                        action_kv = json.loads(action)
+                        k = action_kv.get('type')
+                        command = action_kv.get('command')
+                        if k == 'javascript' :
+                            js_ret = page.run_cdp("Runtime.evaluate", **{
+                                "expression": command
+                            })
+                        elif k == 'sleep' :
+                            time.sleep(command)
                     
                 if delay and delay > 0 :
                     time.sleep(delay)
