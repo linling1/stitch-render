@@ -1,6 +1,7 @@
 FROM ubuntu:20.04
 
-RUN apt-get update && echo 12 | DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y wget unzip libvips-dev libdrm2 libice6 libsm6 libgbm-dev libxkbcommon-x11-0 libgtk-3-0 libasound2 curl python3.8 python3-pip
+RUN apt-get update && echo 12 | DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt-get install -y wget unzip libvips-dev libdrm2 libice6 libsm6 libgbm-dev libxkbcommon-x11-0 libgtk-3-0 libasound2 curl python3.8 python3-pip ffmpeg
+# RUN apt-get install -y tesseract-ocr
 
 
 ENV HOME /root
@@ -13,13 +14,6 @@ RUN source ~/.bashrc && nvm install $NODE_VERSION && nvm use $NODE_VERSION
 
 RUN echo y | npx @puppeteer/browsers install chrome@126.0.6478.126
 RUN ln -s /chrome/linux-126.0.6478.126/chrome-linux64/chrome /usr/bin/google-chrome
-
-
-RUN wget https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz -O ffmpeg.tar.xz && \
-    tar -xf ffmpeg.tar.xz && \
-    rm ffmpeg.tar.xz
-RUN cp ffmpeg-*-linux64-gpl/bin/ffmpeg /usr/local/bin/ && \
-    rm -rf ffmpeg-*
 
     
 COPY . /spider-stitch-render
