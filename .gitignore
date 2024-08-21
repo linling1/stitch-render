@@ -131,7 +131,6 @@ dmypy.json
 .DS_Store
 spider/scrapers/output/
 
-.vscode/
 
 logs/
 
