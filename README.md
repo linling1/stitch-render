@@ -31,3 +31,10 @@ Stitch DrissionPage Render
 | disable_pop | bool | true | |
 | incognito | bool | true | |
 
+
+## 验证码
+### 支持验证码
+
+#### google reCAPTCHA
+
+* 必须安装 `ffmpeg`

@@ -14,6 +14,14 @@ RUN source ~/.bashrc && nvm install $NODE_VERSION && nvm use $NODE_VERSION
 RUN echo y | npx @puppeteer/browsers install chrome@126.0.6478.126
 RUN ln -s /chrome/linux-126.0.6478.126/chrome-linux64/chrome /usr/bin/google-chrome
 
+
+RUN wget https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz -O ffmpeg.tar.xz && \
+    tar -xf ffmpeg.tar.xz && \
+    rm ffmpeg.tar.xz
+RUN cp ffmpeg-*-linux64-gpl/bin/ffmpeg /usr/local/bin/ && \
+    rm -rf ffmpeg-*
+
+    
 COPY . /spider-stitch-render
 
 WORKDIR /spider-stitch-render

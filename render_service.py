@@ -6,6 +6,7 @@ import json
 
 from drission_page_render import DrissionPageRender, EXECUTOR_TIMEOUT, USER_AGENT_POOL
 from external_api.proxy import get_proxy
+from captcha.google_recaptcha import RecaptchaSolver
 
 
 output_html = """
@@ -68,6 +69,9 @@ class RenderService:
                             })
                         elif k == 'sleep' :
                             time.sleep(command)
+                        elif k == 'reCAPTCHA' :
+                            rs = RecaptchaSolver(page)
+                            rs.solveCaptcha()
                     
                 if delay and delay > 0 :
                     time.sleep(delay)
