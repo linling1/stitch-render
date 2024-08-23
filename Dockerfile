@@ -23,4 +23,6 @@ WORKDIR /spider-stitch-render
 
 RUN pip3 install -r requirements.txt
 
+RUN mkdir -p ~/.cache/whisper/ && wget https://openaipublic.azureedge.net/main/whisper/models/d3dd57d32accea0b295c96e26691aa14d8822fac7d9d27d5dc00b4ca2826dd03/tiny.en.pt && mv tiny.en.pt ~/.cache/whisper/
+
 RUN python3 -m api.api --workers=5

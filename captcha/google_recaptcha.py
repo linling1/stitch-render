@@ -66,7 +66,7 @@ class RecaptchaSolver:
             
             # Submit the key
             iframe('#audio-response').input(Keys.ENTER)
-            time.sleep(.5)
+            time.sleep(1)
 
             # Check if the captcha is solved
             return self.isSolved()
