@@ -22,7 +22,7 @@ def speech_to_text(audio_url:str) -> str :
         text = result["text"]
         logging.info(f"audio_url : {audio_url} ; text : {text}")
         if text :
-            clear_text = text.replace(', ','').strip().strip('.')
+            clear_text = text.replace(',','').replace(' ','').strip().strip('.')
             logging.info(f"audio_url : {audio_url} ; text : {text} ; clear_text : {clear_text}")
             return clear_text
         else :
