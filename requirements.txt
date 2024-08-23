@@ -8,3 +8,7 @@ sanic-openapi
 websockets==10.0
 pydub==0.25.1
 SpeechRecognition==3.10.4
+# pillow==10.4.0
+# pytesseract==0.3.13
+# opencv-python==4.10.0.84
+openai-whisper==20231117

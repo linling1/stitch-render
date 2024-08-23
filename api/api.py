@@ -10,6 +10,7 @@ from sanic_openapi import openapi2_blueprint, doc
 import json
 from time import perf_counter
 from distutils import util
+from facility.speech_to_text import speech_to_text
 
 
 from render_service import RenderService
@@ -154,6 +155,23 @@ def post_render(request):
             return raw(resp.get('content'), content_type=f"image/{render_type}")
         else :
             return {'message': f"invalid 'render_type' : {render_type}"}, 401
+    except Exception as e :
+        logging.exception(e)
+        return {'message': str(e)}, 500
+
+
+
+@app.get('captcha/asr')
+@doc.consumes(doc.String(name="audio_url"), location="query", required=True)
+def captcha_asr(request):
+    audio_url = request.args.get('audio_url')
+    logging.info(f"[captcha_asr] ===== audio_url : {audio_url} ; args : {json.dumps(request.args)}")
+    try :
+        audio_url = request.args.get('audio_url')
+        text = speech_to_text(audio_url)
+        if not text :
+            raise ValueError("asr fail")
+        return json_response({'text':text})
     except Exception as e :
         logging.exception(e)
         return {'message': str(e)}, 500
