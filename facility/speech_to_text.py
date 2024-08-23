@@ -17,7 +17,7 @@ def speech_to_text(audio_url:str) -> str :
     audio_file = hashlib.md5(audio_url.encode('utf-8')).hexdigest() + f"_{int(datetime.utcnow().replace(tzinfo=timezone.utc).timestamp() * 1000)}"
     urllib.request.urlretrieve(audio_url, audio_file)
     try :
-        model = whisper.load_model("tiny.en")
+        model = whisper.load_model("base.en")
         logging.info(f"start task : {audio_file}")
         result = model.transcribe(audio_file)
         text = result["text"]
