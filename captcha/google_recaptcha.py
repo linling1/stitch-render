@@ -4,6 +4,8 @@ from DrissionPage.common import Keys
 from DrissionPage import ChromiumPage
 from datetime import datetime, timezone
 
+from tools.tools import remove_file
+
 
 class RecaptchaSolver:
     def __init__(self, driver:ChromiumPage):
@@ -13,14 +15,9 @@ class RecaptchaSolver:
     def _gain_audio_file_name(self) -> str :
         file_name = f"{int(datetime.utcnow().replace(tzinfo=timezone.utc).timestamp() * 1000)}_{random.randrange(1,1000)}"
         return file_name
+
     
-    
-    def _delete_file(self, fn:str) -> None :
-        if fn and os.path.exists(fn):
-            os.remove(fn)
-    
-    
-    def solveCaptcha(self) -> bool:
+    def solve_captcha(self) -> bool:
         file_name = self._gain_audio_file_name()
         path_to_mp3 = f"./{file_name}.mp3"
         path_to_wav = f"./{file_name}.wav"
@@ -73,8 +70,8 @@ class RecaptchaSolver:
         except Exception as e :
             logging.error(f"solve reCaptcha fail. e : {e}")
         finally :
-            self._delete_file(path_to_mp3)
-            self._delete_file(path_to_wav)
+            remove_file(path_to_mp3)
+            remove_file(path_to_wav)
 
     def isSolved(self):
         try:
