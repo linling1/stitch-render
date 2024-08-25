@@ -71,7 +71,7 @@ class RenderService:
                             time.sleep(command)
                         elif k == 'reCAPTCHA' :
                             rs = RecaptchaSolver(page)
-                            rs.solveCaptcha()
+                            rs.solve_captcha()
                     
                 if delay and delay > 0 :
                     time.sleep(delay)

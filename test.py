@@ -64,7 +64,7 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
                 time.sleep(command)
             elif k == 'reCAPTCHA' :
                 rs = RecaptchaSolver(page)
-                rs.solveCaptcha()
+                rs.solve_captcha()
     # time.sleep(10)
     print(page.html, file=open('/Users/linling/Desktop/a.html', 'w'))  # 打印数据包正文
     
