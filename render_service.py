@@ -29,6 +29,13 @@ class RenderService:
     def render(self, url:str, render_type:str="json", user_agent:str=None, headers:dict=None, cookies:dict=None, proxy_url:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False, javascript:str=None, disable_proxy:bool=False, delay:float=None, width:int=1440, height:int=718, full_page:bool=False, disable_pop:bool=True, incognito:bool=True, actions:list=None) -> str :
         try :
             proxy_host = proxy_url if proxy_url else get_proxy()
+            if proxy_url :
+                proxy_host = proxy_url
+            else :
+                while True :
+                    proxy_host = get_proxy()
+                    if proxy_host.startswith('http://172.28.') :
+                        break
             user_agent = user_agent if user_agent else USER_AGENT_POOL[random.randint(0, len(USER_AGENT_POOL) - 1)]
             loading_page_timeout = loading_page_timeout if loading_page_timeout else EXECUTOR_TIMEOUT
             width = width if width else 1440
@@ -72,6 +79,10 @@ class RenderService:
                         elif k == 'reCAPTCHA' :
                             rs = RecaptchaSolver(page)
                             rs.solve_captcha()
+                        elif k == 'refresh' :
+                            page.refresh()
+                        elif k == 'redirecting' :
+                            page.get(command)
                     
                 if delay and delay > 0 :
                     time.sleep(delay)
@@ -88,6 +99,8 @@ class RenderService:
                 
                 resp = page.run_cdp("Network.loadNetworkResource", **{'frameId':page._frame_id,'url':page.url, 'options':{'disableCache':True,'includeCredentials':True}})
                 logging.info(f"resp : {resp}")
+                resp_cookies = page.cookies(as_dict=True)
+                logging.info(f"resp_cookies : {resp_cookies}")
                 
 
                 return {
@@ -98,6 +111,7 @@ class RenderService:
                     "status": resp.get('resource',{}).get('success'),
                     "httpStatusCode": resp.get('resource',{}).get('httpStatusCode'),
                     "headers": resp.get('resource',{}).get('headers'),
+                    "cookies": resp_cookies
                 }
         except Exception as e :
             logging.error(f"redner fail. url : {url} ; user_agent : {user_agent} ; proxy_host : {proxy_host} ; loading_page_timeout : {loading_page_timeout} . err : {e}")

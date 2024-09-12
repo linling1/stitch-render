@@ -50,6 +50,7 @@ class DrissionPageRender:
             if disable_pop  :
                 co.set_argument("--disable-notifications")
                 co.set_argument("--disable-popup-blocking")
+                co.set_argument("--disable-geolocation")
             
             if incognito :
                 co.set_argument("--incognito")
@@ -71,12 +72,12 @@ class DrissionPageRender:
             if chrome_path :
                 co.set_browser_path(chrome_path)
             
-            # now = datetime.utcnow().replace(tzinfo=timezone.utc)
-            # auto_prot = 9600 + int(now.timestamp()) % 9600 + now.microsecond % 100
-            # co.set_local_port(auto_prot)
+            now = datetime.utcnow().replace(tzinfo=timezone.utc)
+            auto_prot = 9600 + int(now.timestamp()) % 9600 + now.microsecond % 100
+            co.set_local_port(auto_prot)
             logging.info("start launch ChromiumPage")
             page = ChromiumPage(co)
-            logging.info("finish launch ChromiumPage")
+            logging.info(f"finish launch ChromiumPage. _is_exist : {page._is_exist} ; address : {page.address}")
             if run_js :
                 js = open(os.path.join(os.path.dirname(__file__), './js/stealth.min.js')).read()
                 page.run_cdp("Page.addScriptToEvaluateOnNewDocument", **{
