@@ -4,6 +4,8 @@ from DrissionPage import ChromiumPage, ChromiumOptions
 from datetime import datetime, timedelta, timezone
 import platform
 
+from tools.tools import remove_dir
+
 
 USER_AGENT_POOL = [
     "Mozilla/5.0 (compatible; Bingbot/2.0; +http://www.bing.com/bingbot.htm)",
@@ -77,7 +79,8 @@ class DrissionPageRender:
             co.set_local_port(auto_prot)
             logging.info("start launch ChromiumPage")
             page = ChromiumPage(co)
-            logging.info(f"finish launch ChromiumPage. _is_exist : {page._is_exist} ; address : {page.address}")
+            _user_data_path = page._chromium_options._user_data_path
+            logging.info(f"finish launch ChromiumPage. _is_exist : {page._is_exist} ; address : {page.address} ; _user_data_path : {_user_data_path}")
             if run_js :
                 js = open(os.path.join(os.path.dirname(__file__), './js/stealth.min.js')).read()
                 page.run_cdp("Page.addScriptToEvaluateOnNewDocument", **{
@@ -100,6 +103,9 @@ class DrissionPageRender:
                 self.page.quit()
             except :
                 pass
+            logging.info(f"user_data dir : {self.page._chromium_options._user_data_path}")
+            remove_dir(self.page._chromium_options._user_data_path)
+                
     
     def __enter__(self) :
         return self.page

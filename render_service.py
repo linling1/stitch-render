@@ -3,10 +3,12 @@ import logging
 import time
 import random
 import json
+from DrissionPage._elements.none_element import NoneElement
 
 from drission_page_render import DrissionPageRender, EXECUTOR_TIMEOUT, USER_AGENT_POOL
 from external_api.proxy import get_proxy
 from captcha.google_recaptcha import RecaptchaSolver
+
 
 
 output_html = """
@@ -65,6 +67,7 @@ class RenderService:
                     })
                     js_ret = js_ret.get('result',{}).get('value')
                 
+                screenshot_img_base64 = None
                 if actions :
                     for action in actions :
                         action_kv = json.loads(action)
@@ -83,6 +86,10 @@ class RenderService:
                             page.refresh()
                         elif k == 'redirecting' :
                             page.get(command)
+                        elif k == 'screenshot_element' :
+                            ele = page.ele(command)
+                            if type(ele) != NoneElement :
+                                screenshot_img_base64 = ele.get_screenshot(as_base64='png')
                     
                 if delay and delay > 0 :
                     time.sleep(delay)
@@ -102,6 +109,8 @@ class RenderService:
                 resp_cookies = page.cookies(as_dict=True)
                 logging.info(f"resp_cookies : {resp_cookies}")
                 
+                if screenshot_img_base64 :
+                    screenshot_img_base64 = f"data:image/png;base64,{screenshot_img_base64}"
 
                 return {
                     "url": page.url,
@@ -111,7 +120,8 @@ class RenderService:
                     "status": resp.get('resource',{}).get('success'),
                     "httpStatusCode": resp.get('resource',{}).get('httpStatusCode'),
                     "headers": resp.get('resource',{}).get('headers'),
-                    "cookies": resp_cookies
+                    "cookies": resp_cookies,
+                    "screenshot_img_base64": screenshot_img_base64
                 }
         except Exception as e :
             logging.error(f"redner fail. url : {url} ; user_agent : {user_agent} ; proxy_host : {proxy_host} ; loading_page_timeout : {loading_page_timeout} . err : {e}")

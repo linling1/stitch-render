@@ -23,7 +23,7 @@ def get_google_proxy() -> str:
 def get_proxy(name: str = "offline"):
     if name == "google":
         result = get_google_proxy()
-        return {"http": result, "https": result}
+        return result
 
     proxy_addr = proxy_dict.get(name)
     try:

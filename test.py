@@ -26,12 +26,11 @@ while True :
     proxy_host = get_proxy()
     if proxy_host.startswith('http://172.28.') :
         break
-# proxy_host = "http://172.31.17.153:3128"
+# proxy_host = "http://10.138.0.3:3130"
 print(f"proxy_host : {proxy_host}")
 incognito = True
 with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrome_path, loading_page_timeout=30, proxy_host=proxy_host, disable_proxy=False, incognito=incognito) as page :
-    url = "https://apps.colorado.gov/apps/dps/sor/search/search-advanced.jsf"
-    # url = "https://www.tripadvisor.com/Search?q=bayern&geo=1&ssrc=a&searchNearby=false&searchSessionId=0017da849d2203ad.ssid&blockRedirect=true&offset=0"
+    url = "https://www.vspsor.com/Offender/Details/bc209dbb-cbe1-4a39-ac26-e2d6b73cd2ba"
     # page.set.load_mode.none()  # 设置加载模式为none
     # cookies = {"ASP.NET_SessionId": "ogce2lbzl1cumzoil4zafplb", "__RequestVerificationToken": "8LPCvaUUzZkyjQeblmUxarHrTxWi1Pvzj3q-MRdN6ER37MI8RQ5XMTbkBBF6QoXEKZ3zf4JVc5WpA9wHB6RzZ69oScuquRw3K406PDSpGNg1"}
     cookies = {}
@@ -54,8 +53,8 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
     # wf = open("/Users/linling/Desktop/a.png","wb")
     # wf.write(img_bytes)
     # wf.close()
-    # javascript = "document.getElementById('city-only-search').value = 'LOS ANGELES';document.getElementById('submitButton').click();var c = function () {document.getElementById('continueButton').click()};setInterval('c()',8000)"
-    # javascript = "grecaptcha.ready(function () {grecaptcha.execute('6Lc_P5AmAAAAABEJ5mSrBCTy8Bv66Ota5oTAsqQi', { action: 'search' }).then(function (token) {$('#GrecaptchaToken').val(token);window.prerenderData=token;});});"
+
+    # javascript = "document.getElementById('ctl00_ContentPlaceHolder1_btnAgree').click()"
     javascript = ""
     if javascript :
         js_ret = page.run_cdp("Runtime.evaluate", **{
@@ -81,22 +80,24 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
     #     json.dumps({"type":"sleep","command":8}),
     # ]
     #################### PA ####################
-    actions = [
-        json.dumps({"type":"javascript","command":"document.getElementById('acceptForm:submitLogIn').click()"}),
-        json.dumps({"type":"sleep","command":4}),
-        json.dumps({"type":"javascript","command":"document.getElementById('advancedSearchForm:county').value='el paso'"}),
-        json.dumps({"type":"sleep","command":4}),
-        json.dumps({"type":"reCAPTCHA"}),
-        json.dumps({"type":"javascript","command":"document.querySelector('input[type=\"submit\"]').click()"}),
-        json.dumps({"type":"sleep","command":2})
-    ]
-    # actions = []
     # actions = [
-    #     "{\"type\": \"javascript\", \"command\": \"document.getElementById('agreeInd1').checked=true\"}", 
-    #     "{\"type\": \"reCAPTCHA\"}", 
-    #     "{\"type\": \"javascript\", \"command\": \"document.querySelector('input[value=\\\"Proceed\\\"]').click()\"}", 
-    #     "{\"type\": \"sleep\", \"command\": 5}",
-    #     "{\"type\": \"javascript\", \"command\": \"document.getElementById('countyCode').value='MIDDLESEX';document.querySelector('form[action=\\\"countyCityZipSearchforSexOffenders.action\\\"] input[type=\\\"submit\\\"]').click()\"}"]
+    #     json.dumps({"type":"reCAPTCHA"}),
+    #     json.dumps({"type":"sleep","command":6}),
+    #     json.dumps({"type":"javascript","command":"document.getElementById('searchButton').click();"}),
+    #     # json.dumps({"type":"javascript","command":f"document.getElementById('advancedSearchForm:county').value='{county_val}'"}),
+    #     # json.dumps({"type":"sleep","command":5}),
+    #     # json.dumps({"type":"reCAPTCHA"}),
+    #     # json.dumps({"type":"sleep","command":2}),
+    #     # json.dumps({"type":"javascript","command":"document.querySelector('input[type=\"submit\"]').click()"}),
+    #     # json.dumps({"type":"sleep","command":10})
+    # ]
+    # actions = []
+    # command1 = "document.querySelector('select[name=\"offenderTable_length\"]').value='100'"
+    actions = [
+        "{\"type\": \"sleep\", \"command\": 3}",
+        "{\"type\": \"screenshot_element\", \"command\": \"tag:img@alt=Photo of offender\"}", 
+    ]
+    screenshot_img_base64 = None
     if actions :
         for action in actions :
             action_kv = json.loads(action)
@@ -115,6 +116,8 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
                 page.refresh()
             elif k == 'redirecting' :
                 page.get(command)
+            elif k == 'screenshot_element' :
+                screenshot_img_base64 = page.ele(command).get_screenshot(as_base64='png')
     # time.sleep(10)
     time.sleep(3)
 
