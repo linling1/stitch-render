@@ -3,10 +3,12 @@ import logging
 import time
 import random
 import json
+from DrissionPage._elements.none_element import NoneElement
 
 from drission_page_render import DrissionPageRender, EXECUTOR_TIMEOUT, USER_AGENT_POOL
 from external_api.proxy import get_proxy
 from captcha.google_recaptcha import RecaptchaSolver
+
 
 
 output_html = """
@@ -29,6 +31,13 @@ class RenderService:
     def render(self, url:str, render_type:str="json", user_agent:str=None, headers:dict=None, cookies:dict=None, proxy_url:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False, javascript:str=None, disable_proxy:bool=False, delay:float=None, width:int=1440, height:int=718, full_page:bool=False, disable_pop:bool=True, incognito:bool=True, actions:list=None) -> str :
         try :
             proxy_host = proxy_url if proxy_url else get_proxy()
+            if proxy_url :
+                proxy_host = proxy_url
+            else :
+                while True :
+                    proxy_host = get_proxy()
+                    if proxy_host.startswith('http://172.28.') :
+                        break
             user_agent = user_agent if user_agent else USER_AGENT_POOL[random.randint(0, len(USER_AGENT_POOL) - 1)]
             loading_page_timeout = loading_page_timeout if loading_page_timeout else EXECUTOR_TIMEOUT
             width = width if width else 1440
@@ -58,6 +67,7 @@ class RenderService:
                     })
                     js_ret = js_ret.get('result',{}).get('value')
                 
+                screenshot_img_base64 = None
                 if actions :
                     for action in actions :
                         action_kv = json.loads(action)
@@ -72,6 +82,14 @@ class RenderService:
                         elif k == 'reCAPTCHA' :
                             rs = RecaptchaSolver(page)
                             rs.solve_captcha()
+                        elif k == 'refresh' :
+                            page.refresh()
+                        elif k == 'redirecting' :
+                            page.get(command)
+                        elif k == 'screenshot_element' :
+                            ele = page.ele(command)
+                            if type(ele) != NoneElement :
+                                screenshot_img_base64 = ele.get_screenshot(as_base64='png')
                     
                 if delay and delay > 0 :
                     time.sleep(delay)
@@ -88,7 +106,11 @@ class RenderService:
                 
                 resp = page.run_cdp("Network.loadNetworkResource", **{'frameId':page._frame_id,'url':page.url, 'options':{'disableCache':True,'includeCredentials':True}})
                 logging.info(f"resp : {resp}")
+                resp_cookies = page.cookies(as_dict=True)
+                logging.info(f"resp_cookies : {resp_cookies}")
                 
+                if screenshot_img_base64 :
+                    screenshot_img_base64 = f"data:image/png;base64,{screenshot_img_base64}"
 
                 return {
                     "url": page.url,
@@ -98,6 +120,8 @@ class RenderService:
                     "status": resp.get('resource',{}).get('success'),
                     "httpStatusCode": resp.get('resource',{}).get('httpStatusCode'),
                     "headers": resp.get('resource',{}).get('headers'),
+                    "cookies": resp_cookies,
+                    "screenshot_img_base64": screenshot_img_base64
                 }
         except Exception as e :
             logging.error(f"redner fail. url : {url} ; user_agent : {user_agent} ; proxy_host : {proxy_host} ; loading_page_timeout : {loading_page_timeout} . err : {e}")

@@ -8,7 +8,7 @@
             "name": "test",
             "type": "python",
             "request": "launch",
-            "module": "test3",
+            "module": "test",
             "justMyCode": true
         },
         {
