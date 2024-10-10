@@ -38,4 +38,3 @@ def speech_to_text(audio_url:str) -> str :
         raise e
     finally :
         remove_file(audio_file)
-
