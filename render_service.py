@@ -157,26 +157,24 @@ class RenderService:
                         if frame_src :
                             html_dom(f'{tag}[src="{frame_src}"]:first').html(frame.inner_html)
                 
-                if enable_iframe and include_shasow_roots :
-                    ret = page.run_cdp("Runtime.evaluate", **{
-                        "expression": shadow_elements
-                    })
-                    shadows_raw = ret.get('result',{}).get('value')
-                    if shadows_raw :
-                        for item in json.loads(shadows_raw) :
-                            tag = item.split(" ")[0][1:]
-                            for e in page.eles(f"tag:{tag}") :
-                                if not e.shadow_root:
-                                    continue
-                                for iframe_e in e.shadow_root.eles('tag:iframe') :
-                                    frame_dom = pq(iframe_e.html)
-                                    frame_src = frame_dom.attr('src')
-                                    if frame_src :
-                                        html_dom(f'iframe[src="{frame_src}"]:first').html(iframe_e.inner_html)
-                            
-                
-                content = html_dom.outer_html()
-                print(content, file=open('/Users/linling/Desktop/b.html', 'w'))  # 打印数据包正文
+                    if include_shasow_roots :
+                        ret = page.run_cdp("Runtime.evaluate", **{
+                            "expression": shadow_elements
+                        })
+                        shadows_raw = ret.get('result',{}).get('value')
+                        if shadows_raw :
+                            for item in json.loads(shadows_raw) :
+                                tag = item.split(" ")[0][1:]
+                                for e in page.eles(f"tag:{tag}") :
+                                    if not e.shadow_root:
+                                        continue
+                                    for iframe_e in e.shadow_root.eles('tag:iframe') :
+                                        frame_dom = pq(iframe_e.html)
+                                        frame_src = frame_dom.attr('src')
+                                        if frame_src :
+                                            html_dom(f'iframe[src="{frame_src}"]:first').html(iframe_e.inner_html)
+
+                    content = html_dom.outer_html()
                 
                 return {
                     "url": page.url,
