@@ -20,19 +20,21 @@ logging.basicConfig(
 # for cookie_key in resp.cookies:
 #     cookies[cookie_key] = resp.cookies.get(cookie_key)
 
-chrome_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+# chrome_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+chrome_path = "/Users/linling/Desktop/chrome/mac-128.0.6613.137/chrome-mac-x64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
 user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 while True :
     proxy_host = get_proxy()
     if proxy_host.startswith('http://172.28.') :
         break
-# proxy_host = "http://10.138.0.3:3130"
+proxy_host = "http://172.28.16.88:3128"
 print(f"proxy_host : {proxy_host}")
 incognito = True
-with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrome_path, loading_page_timeout=30, proxy_host=proxy_host, disable_proxy=False, incognito=incognito) as page :
-    url = "https://www.vspsor.com/Offender/Details/bc209dbb-cbe1-4a39-ac26-e2d6b73cd2ba"
+disable_proxy = False
+with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrome_path, loading_page_timeout=30, proxy_host=proxy_host, disable_proxy=disable_proxy, incognito=incognito) as page :
+    url = "https://www.paisemiu.com/cronaca/controlli-porta-a-porta-a-san-pio-individuati-313-evasori-tari/"
     # page.set.load_mode.none()  # 设置加载模式为none
-    # cookies = {"ASP.NET_SessionId": "ogce2lbzl1cumzoil4zafplb", "__RequestVerificationToken": "8LPCvaUUzZkyjQeblmUxarHrTxWi1Pvzj3q-MRdN6ER37MI8RQ5XMTbkBBF6QoXEKZ3zf4JVc5WpA9wHB6RzZ69oScuquRw3K406PDSpGNg1"}
+    # cookies = {"datadome": "rfpV3_2zpMZPuq71K6V4rontU2MCE~Mb02VMNMxc~9etqzk2WbNrbQoonjR5yeyq4m0c25XDS5Dyhynky5LwojDcvMFKFlo8tndOcDsx~uixioQTxwJR_biZtc0CMc1Y"}
     cookies = {}
     if cookies :
         cookie_param = []
@@ -54,7 +56,7 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
     # wf.write(img_bytes)
     # wf.close()
 
-    # javascript = "document.getElementById('ctl00_ContentPlaceHolder1_btnAgree').click()"
+    # javascript = "document.getElementById('confirmBtn').click();document.getElementById('zipcodes').value = '19120 19124 19143';document.getElementById('searchbynamezip').click();"
     javascript = ""
     if javascript :
         js_ret = page.run_cdp("Runtime.evaluate", **{
@@ -80,23 +82,17 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
     #     json.dumps({"type":"sleep","command":8}),
     # ]
     #################### PA ####################
+    
+    frame_datas = []
+    for frame in page.get_frames() :
+        frame_datas.append(frame.html)
+    # page.get_frames()[0].html = txt
     # actions = [
-    #     json.dumps({"type":"reCAPTCHA"}),
-    #     json.dumps({"type":"sleep","command":6}),
-    #     json.dumps({"type":"javascript","command":"document.getElementById('searchButton').click();"}),
-    #     # json.dumps({"type":"javascript","command":f"document.getElementById('advancedSearchForm:county').value='{county_val}'"}),
-    #     # json.dumps({"type":"sleep","command":5}),
-    #     # json.dumps({"type":"reCAPTCHA"}),
-    #     # json.dumps({"type":"sleep","command":2}),
-    #     # json.dumps({"type":"javascript","command":"document.querySelector('input[type=\"submit\"]').click()"}),
-    #     # json.dumps({"type":"sleep","command":10})
+    #     json.dumps({"type":"javascript","command":f"document.getElementsByTagName('iframe')[0].outerHTML={txt}"}),
+    #     # json.dumps({"type":"sleep","command":10}),
     # ]
-    # actions = []
-    # command1 = "document.querySelector('select[name=\"offenderTable_length\"]').value='100'"
-    actions = [
-        "{\"type\": \"sleep\", \"command\": 3}",
-        "{\"type\": \"screenshot_element\", \"command\": \"tag:img@alt=Photo of offender\"}", 
-    ]
+    actions = []
+    
     screenshot_img_base64 = None
     if actions :
         for action in actions :
@@ -122,6 +118,7 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
     time.sleep(3)
 
     print(page.html, file=open('/Users/linling/Desktop/a.html', 'w'))  # 打印数据包正文
+    print(json.dumps(frame_datas), file=open('/Users/linling/Desktop/a.json', 'w'))  # 打印数据包正文
     
 
 

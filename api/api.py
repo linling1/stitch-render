@@ -76,6 +76,8 @@ def add_cost_time(request, response) :
 @doc.consumes(doc.Boolean(name="full_page"), location="query", required=False)
 @doc.consumes(doc.Boolean(name="disable_pop"), location="query", required=False)
 @doc.consumes(doc.Boolean(name="incognito"), location="query", required=False)
+@doc.consumes(doc.Boolean(name="include_shasow_roots"), location="query", required=False)
+@doc.consumes(doc.Boolean(name="enable_iframe"), location="query", required=False)
 def get_render(request):
     url = request.args.get('url')
     logging.info(f"[get_render] ===== url : {url} ; args : {json.dumps(request.args)}")
@@ -107,7 +109,9 @@ def get_render(request):
         full_page = bool(util.strtobool(request.args.get('full_page', 'false')))
         disable_pop = bool(util.strtobool(request.args.get('disable_pop', 'true')))
         incognito = bool(util.strtobool(request.args.get('incognito', 'true')))
-        resp = request.app.ctx.render_service.render(url=url, render_type=render_type, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height, full_page=full_page, disable_pop=disable_pop, incognito=incognito)
+        include_shasow_roots = bool(util.strtobool(request.args.get('include_shasow_roots', 'true')))
+        enable_iframe = bool(util.strtobool(request.args.get('enable_iframe', 'true')))
+        resp = request.app.ctx.render_service.render(url=url, render_type=render_type, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height, full_page=full_page, disable_pop=disable_pop, incognito=incognito, include_shasow_roots=include_shasow_roots, enable_iframe=enable_iframe)
         if render_type == 'json' :
             return json_response(resp)
         elif render_type == 'html' :
@@ -146,7 +150,9 @@ def post_render(request):
         disable_pop = body.get('disable_pop', True)
         incognito = body.get('incognito', True)
         actions = body.get('actions')
-        resp = request.app.ctx.render_service.render(url=url, render_type=render_type, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height, full_page=full_page, disable_pop=disable_pop, incognito=incognito, actions=actions)
+        include_shasow_roots = body.get('include_shasow_roots', False)
+        enable_iframe = body.get('enable_iframe', False)
+        resp = request.app.ctx.render_service.render(url=url, render_type=render_type, user_agent=user_agent, headers=headers, cookies=cookies, proxy_url=proxy_url, loading_page_timeout=loading_page_timeout, refresh=refresh, javascript=javascript, disable_proxy=disable_proxy, delay=delay, width=width, height=height, full_page=full_page, disable_pop=disable_pop, incognito=incognito, actions=actions, include_shasow_roots=include_shasow_roots, enable_iframe=enable_iframe)
         if render_type == 'json' :
             return json_response(resp)
         elif render_type == 'html' :
