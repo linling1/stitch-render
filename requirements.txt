@@ -14,3 +14,4 @@ SpeechRecognition==3.10.4
 openai-whisper==20231117
 transformers==4.40.0
 curl_cffi==0.7.1
+pyquery==1.4.3

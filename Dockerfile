@@ -12,8 +12,8 @@ RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | 
 SHELL ["/bin/bash","-ic"] 
 RUN source ~/.bashrc && nvm install $NODE_VERSION && nvm use $NODE_VERSION
 
-RUN echo y | npx @puppeteer/browsers install chrome@126.0.6478.126
-RUN ln -s /chrome/linux-126.0.6478.126/chrome-linux64/chrome /usr/bin/google-chrome
+RUN echo y | npx @puppeteer/browsers install chrome@128.0.6613.137
+RUN ln -s /chrome/linux-128.0.6613.137/chrome-linux64/chrome /usr/bin/google-chrome
 
     
 COPY . /spider-stitch-render

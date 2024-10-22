@@ -4,6 +4,7 @@ import time
 import random
 import json
 from DrissionPage._elements.none_element import NoneElement
+from pyquery import PyQuery as pq
 
 from drission_page_render import DrissionPageRender, EXECUTOR_TIMEOUT, USER_AGENT_POOL
 from external_api.proxy import get_proxy
@@ -13,12 +14,44 @@ from captcha.google_recaptcha import RecaptchaSolver
 
 output_html = """
 (() => {
+    const innerText =  document.firstElementChild.getInnerHTML();
+    const htmlNode = document.firstElementChild;
+    const attributeNames = htmlNode.getAttributeNames();
+    const attrStringList = attributeNames.map((attributeName) => (`${attributeName}="${htmlNode.getAttribute(attributeName)}"`))
+    return `<html ${attrStringList.join(' ')}>${innerText}</html>`;
+})()
+"""
+
+shasow_output_html = """
+(() => {
+    const elements = document.querySelectorAll('*');
+    for (let i = 0; i < elements.length; i++) {
+        const el = elements[i];
+        if (el.shadowRoot) {
+            var txt = el.shadowRoot.inner_html;
+            el.inner_html = txt;
+        }
+    }
     const innerText =  document.firstElementChild.getInnerHTML({includeShadowRoots: true});
     const htmlNode = document.firstElementChild;
     const attributeNames = htmlNode.getAttributeNames();
     const attrStringList = attributeNames.map((attributeName) => (`${attributeName}="${htmlNode.getAttribute(attributeName)}"`))
     return `<html ${attrStringList.join(' ')}>${innerText}</html>`;
 })()
+"""
+
+shadow_elements = """
+(() => {
+    shadow_elements = []
+    const elements = document.querySelectorAll('*');
+    for (let i = 0; i < elements.length; i++) {
+        const el = elements[i];
+        if (el.shadowRoot) {
+            shadow_elements.push(el.outerHTML);
+        }
+    }
+    return JSON.stringify(shadow_elements);
+})()    
 """
 
 
@@ -28,7 +61,7 @@ class RenderService:
         self.chrome_path = chrome_path
     
     
-    def render(self, url:str, render_type:str="json", user_agent:str=None, headers:dict=None, cookies:dict=None, proxy_url:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False, javascript:str=None, disable_proxy:bool=False, delay:float=None, width:int=1440, height:int=718, full_page:bool=False, disable_pop:bool=True, incognito:bool=True, actions:list=None) -> str :
+    def render(self, url:str, render_type:str="json", user_agent:str=None, headers:dict=None, cookies:dict=None, proxy_url:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False, javascript:str=None, disable_proxy:bool=False, delay:float=None, width:int=1440, height:int=718, full_page:bool=False, disable_pop:bool=True, incognito:bool=True, actions:list=None, include_shasow_roots:bool=False, enable_iframe:bool=False) -> str :
         try :
             proxy_host = proxy_url if proxy_url else get_proxy()
             if proxy_url :
@@ -99,12 +132,14 @@ class RenderService:
                 if render_type in ["png","jpeg"] :
                     content = page.get_screenshot(as_bytes=render_type,full_page=full_page)
                 else :
+                    print_html = shasow_output_html if include_shasow_roots else output_html
                     ret = page.run_cdp("Runtime.evaluate", **{
-                        "expression": output_html
+                        "expression": print_html
                     })
                     content = ret.get('result',{}).get('value')
                 
-                resp = page.run_cdp("Network.loadNetworkResource", **{'frameId':page._frame_id,'url':page.url, 'options':{'disableCache':True,'includeCredentials':True}})
+                # resp = page.run_cdp("Network.loadNetworkResource", **{'frameId':page._frame_id,'url':page.url, 'options':{'disableCache':True,'includeCredentials':True}})
+                resp = page.run_cdp("Network.loadNetworkResource", **{'frameId':page._frame_id,'url':page.url, 'options':{'disableCache':False,'includeCredentials':True}})
                 logging.info(f"resp : {resp}")
                 resp_cookies = page.cookies(as_dict=True)
                 logging.info(f"resp_cookies : {resp_cookies}")
@@ -112,6 +147,37 @@ class RenderService:
                 if screenshot_img_base64 :
                     screenshot_img_base64 = f"data:image/png;base64,{screenshot_img_base64}"
 
+                
+                if enable_iframe :
+                    html_dom = pq(content)
+                    for frame in page.get_frames() :
+                        frame_dom = pq(frame.html)
+                        frame_src = frame_dom.attr('src')
+                        tag = 'frame' if frame_dom.is_('frame') else 'iframe'
+                        if frame_src :
+                            html_dom(f'{tag}[src="{frame_src}"]:first').html(frame.inner_html)
+                
+                if enable_iframe and include_shasow_roots :
+                    ret = page.run_cdp("Runtime.evaluate", **{
+                        "expression": shadow_elements
+                    })
+                    shadows_raw = ret.get('result',{}).get('value')
+                    if shadows_raw :
+                        for item in json.loads(shadows_raw) :
+                            tag = item.split(" ")[0][1:]
+                            for e in page.eles(f"tag:{tag}") :
+                                if not e.shadow_root:
+                                    continue
+                                for iframe_e in e.shadow_root.eles('tag:iframe') :
+                                    frame_dom = pq(iframe_e.html)
+                                    frame_src = frame_dom.attr('src')
+                                    if frame_src :
+                                        html_dom(f'iframe[src="{frame_src}"]:first').html(iframe_e.inner_html)
+                            
+                
+                content = html_dom.outer_html()
+                print(content, file=open('/Users/linling/Desktop/b.html', 'w'))  # 打印数据包正文
+                
                 return {
                     "url": page.url,
                     "proxy": None if disable_proxy else proxy_host,
