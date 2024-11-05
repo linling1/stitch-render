@@ -100,29 +100,42 @@ class RenderService:
                     })
                     js_ret = js_ret.get('result',{}).get('value')
                 
+                
                 screenshot_img_base64 = None
                 if actions :
-                    for action in actions :
-                        action_kv = json.loads(action)
-                        k = action_kv.get('type')
-                        command = action_kv.get('command')
-                        if k == 'javascript' :
-                            js_ret = page.run_cdp("Runtime.evaluate", **{
-                                "expression": command
-                            })
-                        elif k == 'sleep' :
-                            time.sleep(command)
-                        elif k == 'reCAPTCHA' :
-                            rs = RecaptchaSolver(page)
-                            rs.solve_captcha()
-                        elif k == 'refresh' :
-                            page.refresh()
-                        elif k == 'redirecting' :
-                            page.get(command)
-                        elif k == 'screenshot_element' :
-                            ele = page.ele(command)
-                            if type(ele) != NoneElement :
-                                screenshot_img_base64 = ele.get_screenshot(as_base64='png')
+                    retry = 1
+                    c = 0
+                    while c < retry :
+                        c += 1
+                        for action in actions :
+                            action_kv = json.loads(action)
+                            k = action_kv.get('type')
+                            command = action_kv.get('command')
+                            if k == 'javascript' :
+                                js_ret = page.run_cdp("Runtime.evaluate", **{
+                                    "expression": command
+                                })
+                            elif k == 'sleep' :
+                                time.sleep(command)
+                            elif k == 'reCAPTCHA' :
+                                rs = RecaptchaSolver(page)
+                                rs.solve_captcha()
+                            elif k == 'refresh' :
+                                page.refresh()
+                            elif k == 'redirecting' :
+                                page.get(command)
+                            elif k == 'screenshot_element' :
+                                ele = page.ele(command)
+                                if type(ele) != NoneElement :
+                                    screenshot_img_base64 = ele.get_screenshot(as_base64='png')
+                            elif k == 'retry' :
+                                if c != 1 :
+                                    continue
+                                retry_command = json.loads(command)
+                                if retry_command.get('type') == "txt_check" :
+                                    check_command = retry_command.get('command')
+                                    if check_command and check_command in page.html :
+                                        retry += 1
                     
                 if delay and delay > 0 :
                     time.sleep(delay)

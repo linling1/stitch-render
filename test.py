@@ -7,6 +7,7 @@ import json
 from captcha.google_recaptcha import RecaptchaSolver
 from facility.fetch import requests_get_retry
 from external_api.proxy import get_proxy
+import random
 
 logging.basicConfig(
     stream=sys.stderr,
@@ -27,14 +28,15 @@ while True :
     proxy_host = get_proxy()
     if proxy_host.startswith('http://172.28.') :
         break
-proxy_host = "http://172.28.16.88:3128"
+# proxy_host = "http://172.28.16.88:3128"
 print(f"proxy_host : {proxy_host}")
 incognito = True
 disable_proxy = False
 with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrome_path, loading_page_timeout=30, proxy_host=proxy_host, disable_proxy=disable_proxy, incognito=incognito) as page :
-    url = "https://www.paisemiu.com/cronaca/controlli-porta-a-porta-a-san-pio-individuati-313-evasori-tari/"
+    url = "https://sexoffenders.ehawaii.gov/sexoffender/search.html"
     # page.set.load_mode.none()  # 设置加载模式为none
     # cookies = {"datadome": "rfpV3_2zpMZPuq71K6V4rontU2MCE~Mb02VMNMxc~9etqzk2WbNrbQoonjR5yeyq4m0c25XDS5Dyhynky5LwojDcvMFKFlo8tndOcDsx~uixioQTxwJR_biZtc0CMc1Y"}
+
     cookies = {}
     if cookies :
         cookie_param = []
@@ -83,42 +85,76 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
     # ]
     #################### PA ####################
     
-    frame_datas = []
-    for frame in page.get_frames() :
-        frame_datas.append(frame.html)
+    # frame_datas = []
+    # for frame in page.get_frames() :
+    #     frame_datas.append(frame.html)
     # page.get_frames()[0].html = txt
-    # actions = [
-    #     json.dumps({"type":"javascript","command":f"document.getElementsByTagName('iframe')[0].outerHTML={txt}"}),
-    #     # json.dumps({"type":"sleep","command":10}),
-    # ]
-    actions = []
+    actions = [
+        json.dumps(
+            {
+                "type": "javascript",
+                "command": "document.querySelector('input.confirm_checkbox').checked = 'checked';document.querySelector('a.searchButton').click();",
+            }
+        ),
+        json.dumps(
+            {
+                "type": "javascript",
+                "command": "document.getElementById('go-button').click();",
+            }
+        ),
+        json.dumps({"type": "sleep", "command": random.randint(3, 5)}),
+        json.dumps({"type": "reCAPTCHA"}),
+        json.dumps({"type": "sleep", "command": random.randint(3, 5)}),
+        json.dumps(
+            {
+                "type": "javascript",
+                "command": "document.getElementById('go-button').click();",
+            }
+        ),
+        json.dumps({"type": "sleep", "command": random.randint(3, 5)}),
+        json.dumps({"type": "retry", "command": json.dumps({"type":"txt_check","command":"Invalid CAPTCHA response provided"})}),
+    ]
+    # actions = []
     
-    screenshot_img_base64 = None
-    if actions :
-        for action in actions :
-            action_kv = json.loads(action)
-            k = action_kv.get('type')
-            command = action_kv.get('command')
-            if k == 'javascript' :
-                js_ret = page.run_cdp("Runtime.evaluate", **{
-                    "expression": command
-                })
-            elif k == 'sleep' :
-                time.sleep(command)
-            elif k == 'reCAPTCHA' :
-                rs = RecaptchaSolver(page)
-                rs.solve_captcha()
-            elif k == 'refresh' :
-                page.refresh()
-            elif k == 'redirecting' :
-                page.get(command)
-            elif k == 'screenshot_element' :
-                screenshot_img_base64 = page.ele(command).get_screenshot(as_base64='png')
+    retry = 1
+    c = 0
+    while c < retry :
+        c += 1
+        logging.info(f"===== c : {c}")
+        screenshot_img_base64 = None
+        if actions :
+            for action in actions :
+                action_kv = json.loads(action)
+                k = action_kv.get('type')
+                command = action_kv.get('command')
+                if k == 'javascript' :
+                    js_ret = page.run_cdp("Runtime.evaluate", **{
+                        "expression": command
+                    })
+                elif k == 'sleep' :
+                    time.sleep(command)
+                elif k == 'reCAPTCHA' :
+                    rs = RecaptchaSolver(page)
+                    rs.solve_captcha()
+                elif k == 'refresh' :
+                    page.refresh()
+                elif k == 'redirecting' :
+                    page.get(command)
+                elif k == 'screenshot_element' :
+                    screenshot_img_base64 = page.ele(command).get_screenshot(as_base64='png')
+                elif k == 'retry' :
+                    if c != 1 :
+                        continue
+                    retry_command = json.loads(command)
+                    if retry_command.get('type') == "txt_check" :
+                        check_command = retry_command.get('command')
+                        if check_command and check_command in page.html :
+                            retry += 1
+        
     # time.sleep(10)
-    time.sleep(3)
+    # time.sleep(3)
 
     print(page.html, file=open('/Users/linling/Desktop/a.html', 'w'))  # 打印数据包正文
-    print(json.dumps(frame_datas), file=open('/Users/linling/Desktop/a.json', 'w'))  # 打印数据包正文
     
 
 
