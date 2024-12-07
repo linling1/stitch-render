@@ -28,16 +28,28 @@ while True :
     proxy_host = get_proxy()
     if proxy_host.startswith('http://172.28.') :
         break
-# proxy_host = "http://172.28.16.88:3128"
+# proxy_host = "http://172.28.2.3:10000"
 print(f"proxy_host : {proxy_host}")
 incognito = True
 disable_proxy = False
 with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrome_path, loading_page_timeout=30, proxy_host=proxy_host, disable_proxy=disable_proxy, incognito=incognito) as page :
-    url = "https://sexoffenders.ehawaii.gov/sexoffender/search.html"
+    url = "https://www.xiaohongshu.com/explore"
     # page.set.load_mode.none()  # 设置加载模式为none
     # cookies = {"datadome": "rfpV3_2zpMZPuq71K6V4rontU2MCE~Mb02VMNMxc~9etqzk2WbNrbQoonjR5yeyq4m0c25XDS5Dyhynky5LwojDcvMFKFlo8tndOcDsx~uixioQTxwJR_biZtc0CMc1Y"}
 
-    cookies = {}
+    cookies = {
+        "abRequestId":"d180e500-c363-5c48-b43e-8cff60518bb0",
+        "a1":"18e16c4db4b3wd8mg2bq0ntzke2eardthspgwmf7z30000346645",
+        "webId":"9aa00286ca96d93ca0360dcd652d5e7b",
+        "gid":"yYdyKS4dJyxiyYdyKS4fDM6i4DqEfY6kJDA8UWuI9uTdJkq8d0Ff9E888q4KK428YqyyKD2W",
+        "xsecappid":"xhs-pc-web",
+        "web_session":"0400698d25fea93c97b6f66d64354b42ff32c9",
+        "webBuild":"4.46.0",
+        "acw_tc":"0a4ae08a17335717015811955e2d77ee0e4575d8ce18a593d7a96b7513f7a4",
+        "websectiga":"cf46039d1971c7b9a650d87269f31ac8fe3bf71d61ebf9d9a0a87efb414b816c",
+        "sec_poison_id":"e0d54528-7b29-4434-9974-ddfb6a3aeb5a"
+    }
+    # cookies = {}
     if cookies :
         cookie_param = []
         for k, v in cookies.items() :
@@ -59,60 +71,48 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
     # wf.close()
 
     # javascript = "document.getElementById('confirmBtn').click();document.getElementById('zipcodes').value = '19120 19124 19143';document.getElementById('searchbynamezip').click();"
+    # javascript = 'window._webmsxyw("/api/sns/web/v1/search/notes",{"keyword": "湾区","page": 1,"page_size": 20,"search_id": "2e4e5a0ps6ukgutylrb0v","sort": "general","note_type": 0})'
     javascript = ""
     if javascript :
-        js_ret = page.run_cdp("Runtime.evaluate", **{
-            "expression": javascript
-        })
-        js_ret = js_ret.get('result',{}).get('value')
+        js_ret = page.run_js(javascript,as_expr=True)
     
     
-    #################### PA ####################
-    # county = "ALLEGHENY"
-    # p = 20
-    # page_href=f'https://www.meganslaw.psp.pa.gov/Search/CountySearchResultsAsync?page={p}&selectedCounty={county}&selectedSortBy=1&chkCountyIncarcerated=True'
-    # command1 = f"document.getElementById('Countydropdown').value='{county}';document.getElementById('chkCountyIncarcerated').checked=true;document.querySelector('input[type=\"button\"]').click()"
-    # command2 = "grecaptcha.ready(function () {grecaptcha.execute(siteKey, { action: 'search' }).then(function (token) {$('#GrecaptchaToken').val(token);location.href = '" + page_href + "' + '&GrecaptchaToken=' + token;});});"
     # actions = [
-    #     json.dumps({"type":"javascript", "command":"document.querySelector('form[action=\"/Home/AcceptTerms\"] button').click()"}),
-    #     json.dumps({"type":"sleep","command":0.5}),
-    #     json.dumps({"type":"redirecting", "command":"https://www.meganslaw.psp.pa.gov/Search/CountySearch"}),
-    #     json.dumps({"type":"sleep","command":1}),
-    #     json.dumps({"type":"javascript", "command":command1}),
-    #     json.dumps({"type":"sleep","command":1}),
-    #     json.dumps({"type":"javascript", "command": command2}),
-    #     json.dumps({"type":"sleep","command":8}),
+    #     # json.dumps(
+    #     #     {
+    #     #         "type": "javascript",
+    #     #         "command": "document.querySelector('input[value=\"I Agree\"]').click()",
+    #     #     }
+    #     # ),
+    #     # json.dumps({"type": "sleep", "command": 15}),
+    #     json.dumps({"type": "reCAPTCHA"}),
+    #     json.dumps(
+    #         {
+    #             "type": "javascript",
+    #             "command": "document.querySelector('input[value=\"Continue\"]').click()",
+    #         }
+    #     ),
+    #     json.dumps({"type": "sleep", "command": 2}),
+    #     json.dumps(
+    #         {
+    #             "type": "retry",
+    #             "command": json.dumps(
+    #                 {
+    #                     "type": "txt_check",
+    #                     "command": "Please check the box and then press Continue.",
+    #                 }
+    #             ),
+    #         }
+    #     ),
     # ]
-    #################### PA ####################
-    
-    # frame_datas = []
-    # for frame in page.get_frames() :
-    #     frame_datas.append(frame.html)
-    # page.get_frames()[0].html = txt
     actions = [
+        json.dumps({"type": "sleep", "command": 2}),
         json.dumps(
             {
                 "type": "javascript",
-                "command": "document.querySelector('input.confirm_checkbox').checked = 'checked';document.querySelector('a.searchButton').click();",
+                "command": 'window._webmsxyw("/api/sns/web/v1/search/notes",{"keyword": "湾区","page": 1,"page_size": 20,"search_id": "2e4e5a0ps6ukgutylrb0v","sort": "general","note_type": 0})',
             }
         ),
-        json.dumps(
-            {
-                "type": "javascript",
-                "command": "document.getElementById('go-button').click();",
-            }
-        ),
-        json.dumps({"type": "sleep", "command": random.randint(3, 5)}),
-        json.dumps({"type": "reCAPTCHA"}),
-        json.dumps({"type": "sleep", "command": random.randint(3, 5)}),
-        json.dumps(
-            {
-                "type": "javascript",
-                "command": "document.getElementById('go-button').click();",
-            }
-        ),
-        json.dumps({"type": "sleep", "command": random.randint(3, 5)}),
-        json.dumps({"type": "retry", "command": json.dumps({"type":"txt_check","command":"Invalid CAPTCHA response provided"})}),
     ]
     # actions = []
     
@@ -128,12 +128,12 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
                 k = action_kv.get('type')
                 command = action_kv.get('command')
                 if k == 'javascript' :
-                    js_ret = page.run_cdp("Runtime.evaluate", **{
-                        "expression": command
-                    })
+                    js_ret = page.run_js(command,as_expr=True)
                 elif k == 'sleep' :
                     time.sleep(command)
                 elif k == 'reCAPTCHA' :
+                    s_t = time.time()
+                    logging.info(f'loading reCAPTCHA cost : {time.time() - s_t}ms')
                     rs = RecaptchaSolver(page)
                     rs.solve_captcha()
                 elif k == 'refresh' :

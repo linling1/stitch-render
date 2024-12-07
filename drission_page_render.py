@@ -64,7 +64,7 @@ class DrissionPageRender:
             # co.set_argument("--log-level", '3')
             co.set_argument('--window-size', f'{width},{height}')
             co.set_argument("--profile-directory", "Default")
-            co.set_argument("--disable-plugins-discovery")
+            # co.set_argument("--disable-plugins-discovery")
             co.set_argument("--lang", "en-US")
             co.set_timeouts(page_load=loading_page_timeout)
             
