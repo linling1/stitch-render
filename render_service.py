@@ -95,10 +95,7 @@ class RenderService:
                 
                 js_ret = None
                 if javascript :
-                    js_ret = page.run_cdp("Runtime.evaluate", **{
-                        "expression": javascript
-                    })
-                    js_ret = js_ret.get('result',{}).get('value')
+                    js_ret = page.run_js(javascript,as_expr=True)
                 
                 
                 screenshot_img_base64 = None
@@ -112,9 +109,7 @@ class RenderService:
                             k = action_kv.get('type')
                             command = action_kv.get('command')
                             if k == 'javascript' :
-                                js_ret = page.run_cdp("Runtime.evaluate", **{
-                                    "expression": command
-                                })
+                                js_ret = page.run_js(command,as_expr=True)
                             elif k == 'sleep' :
                                 time.sleep(command)
                             elif k == 'reCAPTCHA' :
@@ -189,7 +184,7 @@ class RenderService:
 
                     content = html_dom.outer_html()
                 
-                return {
+                resp = {
                     "url": page.url,
                     "proxy": None if disable_proxy else proxy_host,
                     "userAgent": user_agent,
@@ -198,8 +193,12 @@ class RenderService:
                     "httpStatusCode": resp.get('resource',{}).get('httpStatusCode'),
                     "headers": resp.get('resource',{}).get('headers'),
                     "cookies": resp_cookies,
-                    "screenshot_img_base64": screenshot_img_base64
                 }
+                if screenshot_img_base64 :
+                    resp["screenshot_img_base64"] = screenshot_img_base64
+                if js_ret :
+                    resp["js_ret"] = js_ret
+                return resp
         except Exception as e :
             logging.error(f"redner fail. url : {url} ; user_agent : {user_agent} ; proxy_host : {proxy_host} ; loading_page_timeout : {loading_page_timeout} . err : {e}")
             logging.exception(e)
