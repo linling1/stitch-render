@@ -91,6 +91,8 @@ class RenderService:
                 if headers :
                     page.run_cdp("Network.setExtraHTTPHeaders", **{'headers':headers})
 
+                if page_model == "new_tab" :
+                    page = page.new_tab()
                 status = page.get(url) 
                 logging.info(f"status : {status}")
                 if refresh :
