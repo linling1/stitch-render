@@ -77,6 +77,9 @@ class RenderService:
             height = height if height else 718
             logging.info(f"render. url : {url} ; refresh : {refresh} ; proxy_host : {proxy_host} ; user_agent : {user_agent} ; loading_page_timeout : {loading_page_timeout} ; disable_proxy : {disable_proxy} ; javascript : {javascript}")
             with DrissionPageRender(proxy_host=proxy_host, user_agent=user_agent, loading_page_timeout=loading_page_timeout, disable_proxy=disable_proxy, width=width, height=height, chrome_path=self.chrome_path, disable_pop=disable_pop, incognito=incognito) as page :
+                if page_model == "new_tab" :
+                    page = page.new_tab()
+                
                 if cookies :
                     cookie_param = []
                     for k, v in cookies.items() :
@@ -88,8 +91,6 @@ class RenderService:
                 if headers :
                     page.run_cdp("Network.setExtraHTTPHeaders", **{'headers':headers})
 
-                if page_model == "new_tab" :
-                    page = page.new_tab()
                 status = page.get(url) 
                 logging.info(f"status : {status}")
                 if refresh :
