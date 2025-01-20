@@ -61,7 +61,7 @@ class RenderService:
         self.chrome_path = chrome_path
     
     
-    def render(self, url:str, render_type:str="json", user_agent:str=None, headers:dict=None, cookies:dict=None, proxy_url:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False, javascript:str=None, disable_proxy:bool=False, delay:float=None, width:int=1440, height:int=718, full_page:bool=False, disable_pop:bool=True, incognito:bool=True, actions:list=None, include_shasow_roots:bool=False, enable_iframe:bool=False) -> str :
+    def render(self, url:str, render_type:str="json", user_agent:str=None, headers:dict=None, cookies:dict=None, proxy_url:str=None, loading_page_timeout:int=EXECUTOR_TIMEOUT, refresh:bool=False, javascript:str=None, disable_proxy:bool=False, delay:float=None, width:int=1440, height:int=718, full_page:bool=False, disable_pop:bool=True, incognito:bool=True, actions:list=None, include_shasow_roots:bool=False, enable_iframe:bool=False, page_model:str=None) -> str :
         try :
             proxy_host = proxy_url if proxy_url else get_proxy()
             if proxy_url :
@@ -88,6 +88,8 @@ class RenderService:
                 if headers :
                     page.run_cdp("Network.setExtraHTTPHeaders", **{'headers':headers})
 
+                if page_model == "new_tab" :
+                    page = page.new_tab()
                 status = page.get(url) 
                 logging.info(f"status : {status}")
                 if refresh :
