@@ -81,12 +81,14 @@ class RenderService:
                     cookie_param = []
                     for k, v in cookies.items() :
                         cookie_param.append({'name':k,'value':v, 'url':url})
+                    page.run_cdp('Network.enable')
                     page.run_cdp("Network.setCookies", **{
                         "cookies": cookie_param
                     })
                 
                 if headers :
-                    page.run_cdp("Network.setExtraHTTPHeaders", **{'headers':headers})
+                    # page.run_cdp("Network.setExtraHTTPHeaders", **{'headers':headers})
+                    page.set.headers(headers)
 
                 status = page.get(url) 
                 logging.info(f"status : {status}")
