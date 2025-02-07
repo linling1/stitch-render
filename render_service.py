@@ -67,11 +67,11 @@ class RenderService:
             if proxy_url :
                 proxy_host = proxy_url
             else :
-                proxy_host = get_proxy()
-                # while True :
-                #     proxy_host = get_proxy()
-                #     if proxy_host.startswith('http://172.28.') :
-                #         break
+                # proxy_host = get_proxy()
+                while True :
+                    proxy_host = get_proxy()
+                    if proxy_host.startswith('http://172.28.') :
+                        break
             user_agent = user_agent if user_agent else USER_AGENT_POOL[random.randint(0, len(USER_AGENT_POOL) - 1)]
             loading_page_timeout = loading_page_timeout if loading_page_timeout else EXECUTOR_TIMEOUT
             width = width if width else 1440

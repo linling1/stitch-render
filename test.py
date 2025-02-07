@@ -24,7 +24,11 @@ logging.basicConfig(
 # chrome_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 chrome_path = "/chrome/linux-128.0.6613.137/chrome-linux64/chrome"
 user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
-proxy_host = get_proxy()
+proxy_host = None
+while True :
+    proxy_host = get_proxy()
+    if proxy_host.startswith('http://172.28.') :
+        break
 # proxy_host = "http://172.28.2.3:10000"
 print(f"proxy_host : {proxy_host}")
 incognito = True
