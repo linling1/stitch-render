@@ -134,4 +134,5 @@ spider/scrapers/output/
 
 logs/
 
-
+.vscode/
+config/linling_conf.py

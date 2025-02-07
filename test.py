@@ -27,15 +27,12 @@ user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36
 proxy_host = get_proxy()
 # proxy_host = "http://172.28.2.3:10000"
 print(f"proxy_host : {proxy_host}")
-incognito = False
+incognito = True
 disable_proxy = False
-new_tab = True
 with DrissionPageRender(headless=True, user_agent=None, chrome_path=chrome_path, loading_page_timeout=30, proxy_host=proxy_host, disable_proxy=disable_proxy, incognito=incognito) as page :
-    # url = "https://sorb.chs.state.ma.us/sorbpublic/standardSearchforSexOffenders.action"
-    url = "https://www.google.com/search?q=bayern"
-    # page.set.load_mode.none()  # 设置加载模式为none
-    # cookies = {"datadome": "rfpV3_2zpMZPuq71K6V4rontU2MCE~Mb02VMNMxc~9etqzk2WbNrbQoonjR5yeyq4m0c25XDS5Dyhynky5LwojDcvMFKFlo8tndOcDsx~uixioQTxwJR_biZtc0CMc1Y"}
-
+    # url = "https://www.google.com/search?q=bayern"
+    url = "https://sorb.chs.state.ma.us/sorbpublic/standardSearchforSexOffenders.action"
+    
     # cookies = {
     #     "abRequestId":"d180e500-c363-5c48-b43e-8cff60518bb0",
     #     "a1":"18e16c4db4b3wd8mg2bq0ntzke2eardthspgwmf7z30000346645",
@@ -53,37 +50,18 @@ with DrissionPageRender(headless=True, user_agent=None, chrome_path=chrome_path,
         cookie_param = []
         for k, v in cookies.items() :
             cookie_param.append({'name':k,'value':v, 'url':url})
-        page.run_cdp("Network.setCookies", **{
-            "cookies": cookie_param
-        })
-    # headers = {
-    #     "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
-    #     "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not A Brand";v="99"',
-    #     "sec-ch-ua-arch": '"x64"',
-    #     "sec-ch-ua-bitness": '"64"',
-    #     "sec-ch-ua-form-factors": '"desktop"',
-    #     "sec-ch-ua-mobile": '?0',
-    #     "sec-ch-ua-platform": '"macOS"',
-    #     "sec-ch-ua-platform-version": '"10_15_7"',
-    #     "sec-ch-ua-wow64": '?0'
-    # }
+        page.set.cookies(cookies)
+    
     headers = {
-        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
     }
     if headers :
-        page.run_cdp("Network.setExtraHTTPHeaders", **{'headers':headers})
+        page.set.headers(headers)
     
     # page.listen.start('api/post/item_list/')  # 指定监听目标并启动监听
-    page = page.new_tab() if new_tab else page.latest_tab
+    # tab = page.latest_tab
     page.get(url)
-    # page = page.new_tab(url)
-    # packet = page.listen.wait()  # 等待数据包
-    # page.stop_loading()  # 主动停止加载
-    # img_bytes = page.get_screenshot(as_bytes=True,full_page=False)
-    # wf = open("/Users/linling/Desktop/a.png","wb")
-    # wf.write(img_bytes)
-    # wf.close()
-
+   
     # javascript = "document.getElementById('confirmBtn').click();document.getElementById('zipcodes').value = '19120 19124 19143';document.getElementById('searchbynamezip').click();"
     # javascript = 'window._webmsxyw("/api/sns/web/v1/search/notes",{"keyword": "湾区","page": 1,"page_size": 20,"search_id": "2e4e5a0ps6ukgutylrb0v","sort": "general","note_type": 0})'
     javascript = ""
@@ -124,7 +102,7 @@ with DrissionPageRender(headless=True, user_agent=None, chrome_path=chrome_path,
             }
         ),
     ]
-    actions = []
+    # actions = []
     
     retry = 1
     c = 0
@@ -166,8 +144,8 @@ with DrissionPageRender(headless=True, user_agent=None, chrome_path=chrome_path,
         
     # time.sleep(10)
     # time.sleep(3)
-
-    print(page.html, file=open('/Users/linling/Desktop/a.html', 'w'))  # 打印数据包正文
+    print(page.title)
+    print(page.html, file=open('./a.html', 'w'))  # 打印数据包正文
     
 
 

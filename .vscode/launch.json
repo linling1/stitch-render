@@ -24,6 +24,13 @@
                 "--env", "linling",
                 "--workers", "1"
             ]
+        },
+        {
+            "name": "playwright_demo",
+            "type": "python",
+            "request": "launch",
+            "module": "playwright_demo",
+            "justMyCode": true
         }
     ]
 }

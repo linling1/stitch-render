@@ -67,10 +67,11 @@ class RenderService:
             if proxy_url :
                 proxy_host = proxy_url
             else :
-                while True :
-                    proxy_host = get_proxy()
-                    if proxy_host.startswith('http://172.28.') :
-                        break
+                proxy_host = get_proxy()
+                # while True :
+                #     proxy_host = get_proxy()
+                #     if proxy_host.startswith('http://172.28.') :
+                #         break
             user_agent = user_agent if user_agent else USER_AGENT_POOL[random.randint(0, len(USER_AGENT_POOL) - 1)]
             loading_page_timeout = loading_page_timeout if loading_page_timeout else EXECUTOR_TIMEOUT
             width = width if width else 1440
@@ -81,12 +82,15 @@ class RenderService:
                     cookie_param = []
                     for k, v in cookies.items() :
                         cookie_param.append({'name':k,'value':v, 'url':url})
+                    page.run_cdp('Network.enable')
                     page.run_cdp("Network.setCookies", **{
                         "cookies": cookie_param
                     })
+                    # page.set.cookies(cookies)
                 
                 if headers :
-                    page.run_cdp("Network.setExtraHTTPHeaders", **{'headers':headers})
+                    # page.run_cdp("Network.setExtraHTTPHeaders", **{'headers':headers})
+                    page.set.headers(headers)
 
                 status = page.get(url) 
                 logging.info(f"status : {status}")
