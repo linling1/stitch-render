@@ -22,34 +22,33 @@ logging.basicConfig(
 #     cookies[cookie_key] = resp.cookies.get(cookie_key)
 
 # chrome_path = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-chrome_path = "/Users/linling/Desktop/chrome/mac-128.0.6613.137/chrome-mac-x64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing"
+chrome_path = "/chrome/linux-128.0.6613.137/chrome-linux64/chrome"
 user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
-while True :
-    proxy_host = get_proxy()
-    if proxy_host.startswith('http://172.28.') :
-        break
+proxy_host = get_proxy()
 # proxy_host = "http://172.28.2.3:10000"
 print(f"proxy_host : {proxy_host}")
-incognito = True
+incognito = False
 disable_proxy = False
-with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrome_path, loading_page_timeout=30, proxy_host=proxy_host, disable_proxy=disable_proxy, incognito=incognito) as page :
-    url = "https://www.xiaohongshu.com/explore"
+new_tab = True
+with DrissionPageRender(headless=True, user_agent=None, chrome_path=chrome_path, loading_page_timeout=30, proxy_host=proxy_host, disable_proxy=disable_proxy, incognito=incognito) as page :
+    # url = "https://sorb.chs.state.ma.us/sorbpublic/standardSearchforSexOffenders.action"
+    url = "https://www.google.com/search?q=bayern"
     # page.set.load_mode.none()  # 设置加载模式为none
     # cookies = {"datadome": "rfpV3_2zpMZPuq71K6V4rontU2MCE~Mb02VMNMxc~9etqzk2WbNrbQoonjR5yeyq4m0c25XDS5Dyhynky5LwojDcvMFKFlo8tndOcDsx~uixioQTxwJR_biZtc0CMc1Y"}
 
-    cookies = {
-        "abRequestId":"d180e500-c363-5c48-b43e-8cff60518bb0",
-        "a1":"18e16c4db4b3wd8mg2bq0ntzke2eardthspgwmf7z30000346645",
-        "webId":"9aa00286ca96d93ca0360dcd652d5e7b",
-        "gid":"yYdyKS4dJyxiyYdyKS4fDM6i4DqEfY6kJDA8UWuI9uTdJkq8d0Ff9E888q4KK428YqyyKD2W",
-        "xsecappid":"xhs-pc-web",
-        "web_session":"0400698d25fea93c97b6f66d64354b42ff32c9",
-        "webBuild":"4.46.0",
-        "acw_tc":"0a4ae08a17335717015811955e2d77ee0e4575d8ce18a593d7a96b7513f7a4",
-        "websectiga":"cf46039d1971c7b9a650d87269f31ac8fe3bf71d61ebf9d9a0a87efb414b816c",
-        "sec_poison_id":"e0d54528-7b29-4434-9974-ddfb6a3aeb5a"
-    }
-    # cookies = {}
+    # cookies = {
+    #     "abRequestId":"d180e500-c363-5c48-b43e-8cff60518bb0",
+    #     "a1":"18e16c4db4b3wd8mg2bq0ntzke2eardthspgwmf7z30000346645",
+    #     "webId":"9aa00286ca96d93ca0360dcd652d5e7b",
+    #     "gid":"yYdyKS4dJyxiyYdyKS4fDM6i4DqEfY6kJDA8UWuI9uTdJkq8d0Ff9E888q4KK428YqyyKD2W",
+    #     "xsecappid":"xhs-pc-web",
+    #     "web_session":"0400698d25fea93c97b6f66d64354b42ff32c9",
+    #     "webBuild":"4.46.0",
+    #     "acw_tc":"0a4ae08a17335717015811955e2d77ee0e4575d8ce18a593d7a96b7513f7a4",
+    #     "websectiga":"cf46039d1971c7b9a650d87269f31ac8fe3bf71d61ebf9d9a0a87efb414b816c",
+    #     "sec_poison_id":"e0d54528-7b29-4434-9974-ddfb6a3aeb5a"
+    # }
+    cookies = {}
     if cookies :
         cookie_param = []
         for k, v in cookies.items() :
@@ -57,12 +56,27 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
         page.run_cdp("Network.setCookies", **{
             "cookies": cookie_param
         })
-    headers = {}
+    # headers = {
+    #     "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
+    #     "sec-ch-ua": '"Chromium";v="130", "Google Chrome";v="130", "Not A Brand";v="99"',
+    #     "sec-ch-ua-arch": '"x64"',
+    #     "sec-ch-ua-bitness": '"64"',
+    #     "sec-ch-ua-form-factors": '"desktop"',
+    #     "sec-ch-ua-mobile": '?0',
+    #     "sec-ch-ua-platform": '"macOS"',
+    #     "sec-ch-ua-platform-version": '"10_15_7"',
+    #     "sec-ch-ua-wow64": '?0'
+    # }
+    headers = {
+        "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+    }
     if headers :
         page.run_cdp("Network.setExtraHTTPHeaders", **{'headers':headers})
     
     # page.listen.start('api/post/item_list/')  # 指定监听目标并启动监听
+    page = page.new_tab() if new_tab else page.latest_tab
     page.get(url)
+    # page = page.new_tab(url)
     # packet = page.listen.wait()  # 等待数据包
     # page.stop_loading()  # 主动停止加载
     # img_bytes = page.get_screenshot(as_bytes=True,full_page=False)
@@ -74,47 +88,43 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
     # javascript = 'window._webmsxyw("/api/sns/web/v1/search/notes",{"keyword": "湾区","page": 1,"page_size": 20,"search_id": "2e4e5a0ps6ukgutylrb0v","sort": "general","note_type": 0})'
     javascript = ""
     if javascript :
-        js_ret = page.run_js(javascript,as_expr=True)
+        js_ret = page.run_cdp("Runtime.evaluate", **{
+            "expression": javascript
+        })
+        js_ret = js_ret.get('result',{}).get('value')
     
     
-    # actions = [
-    #     # json.dumps(
-    #     #     {
-    #     #         "type": "javascript",
-    #     #         "command": "document.querySelector('input[value=\"I Agree\"]').click()",
-    #     #     }
-    #     # ),
-    #     # json.dumps({"type": "sleep", "command": 15}),
-    #     json.dumps({"type": "reCAPTCHA"}),
-    #     json.dumps(
-    #         {
-    #             "type": "javascript",
-    #             "command": "document.querySelector('input[value=\"Continue\"]').click()",
-    #         }
-    #     ),
-    #     json.dumps({"type": "sleep", "command": 2}),
-    #     json.dumps(
-    #         {
-    #             "type": "retry",
-    #             "command": json.dumps(
-    #                 {
-    #                     "type": "txt_check",
-    #                     "command": "Please check the box and then press Continue.",
-    #                 }
-    #             ),
-    #         }
-    #     ),
-    # ]
+    command = f"document.getElementById('countyCode').value='ESSEX';document.querySelector('form[action=\"countyCityZipSearchforSexOffenders.action\"] input[type=\"submit\"]').click()"
     actions = [
-        json.dumps({"type": "sleep", "command": 2}),
         json.dumps(
             {
                 "type": "javascript",
-                "command": 'window._webmsxyw("/api/sns/web/v1/search/notes",{"keyword": "湾区","page": 1,"page_size": 20,"search_id": "2e4e5a0ps6ukgutylrb0v","sort": "general","note_type": 0})',
+                "command": "document.getElementById('agreeInd1').checked=true",
+            }
+        ),
+        json.dumps({"type": "reCAPTCHA"}),
+        json.dumps(
+            {
+                "type": "javascript",
+                "command": "document.querySelector('input[value=\"Proceed\"]').click()",
+            }
+        ),
+        json.dumps({"type": "sleep", "command": 5}),
+        json.dumps({"type": "javascript", "command": command}),
+        json.dumps({"type": "sleep", "command": 3}),
+        json.dumps(
+            {
+                "type": "retry",
+                "command": json.dumps(
+                    {
+                        "type": "txt_check",
+                        "command": "Security Code is required.",
+                    }
+                ),
             }
         ),
     ]
-    # actions = []
+    actions = []
     
     retry = 1
     c = 0
@@ -128,7 +138,10 @@ with DrissionPageRender(headless=False, user_agent=user_agent, chrome_path=chrom
                 k = action_kv.get('type')
                 command = action_kv.get('command')
                 if k == 'javascript' :
-                    js_ret = page.run_js(command,as_expr=True)
+                    js_ret = page.run_cdp("Runtime.evaluate", **{
+                        "expression": command
+                    })
+                    js_ret = js_ret.get('result',{}).get('value')
                 elif k == 'sleep' :
                     time.sleep(command)
                 elif k == 'reCAPTCHA' :

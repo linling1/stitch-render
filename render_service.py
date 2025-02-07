@@ -95,7 +95,10 @@ class RenderService:
                 
                 js_ret = None
                 if javascript :
-                    js_ret = page.run_js(javascript,as_expr=True)
+                    js_ret = page.run_cdp("Runtime.evaluate", **{
+                        "expression": javascript
+                    })
+                    js_ret = js_ret.get('result',{}).get('value')
                 
                 
                 screenshot_img_base64 = None
@@ -109,7 +112,10 @@ class RenderService:
                             k = action_kv.get('type')
                             command = action_kv.get('command')
                             if k == 'javascript' :
-                                js_ret = page.run_js(command,as_expr=True)
+                                js_ret = page.run_cdp("Runtime.evaluate", **{
+                                    "expression": command
+                                })
+                                js_ret = js_ret.get('result',{}).get('value')
                             elif k == 'sleep' :
                                 time.sleep(command)
                             elif k == 'reCAPTCHA' :
